@@ -47,6 +47,7 @@ const fetchContracts = async (url) => {
     await pendingXHR.waitForAllXhrFinished();
     
     let html = await page.content();
+    await page.close();
     return html;
 }
 
