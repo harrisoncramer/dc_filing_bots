@@ -21,13 +21,6 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-
-let waiter = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve();
-    }, 1000)
-});
-
 const fetchContracts = async (url) => {
 
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
