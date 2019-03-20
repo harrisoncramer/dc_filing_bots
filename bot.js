@@ -50,8 +50,9 @@ const fetchContracts = async (url) => {
     return html;
 }
 
+const bot = () => {
 
-fetchContracts("https://efdsearch.senate.gov/search/")
+    fetchContracts("https://efdsearch.senate.gov/search/")
     .then(async(html) => {
         let $ = cheerio.load(html);
 
@@ -128,3 +129,6 @@ fetchContracts("https://efdsearch.senate.gov/search/")
         }
     })
     .catch(err => logger.debug(err));
+}
+
+module.exports = bot;
