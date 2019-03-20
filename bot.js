@@ -30,7 +30,7 @@ let waiter = new Promise((resolve, reject) => {
 
 const fetchContracts = async (url) => {
 
-    const browser = await pupeteer.launch({ headless: true });
+    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
     const pendingXHR = new PendingXHR(page);
 
