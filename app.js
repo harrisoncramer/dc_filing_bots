@@ -4,6 +4,7 @@ const logger = require("./logger");
 
 logger.info("App running...");
 
-cron.schedule('*/15 * * * *', () => {
-    bot();
-});
+bot();
+// cron.schedule('*/15 * * * *', () => {
+//     bot();
+// });

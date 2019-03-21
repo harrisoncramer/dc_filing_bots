@@ -23,7 +23,7 @@ var transporter = nodemailer.createTransport({
 
 const fetchContracts = async (url) => {
 
-    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    const browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
     const pendingXHR = new PendingXHR(page);
 
@@ -48,6 +48,7 @@ const fetchContracts = async (url) => {
     
     let html = await page.content();
     await page.close();
+    await browser.close();
     return html;
 }
 
