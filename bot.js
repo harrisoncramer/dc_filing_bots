@@ -76,7 +76,7 @@ const bot = () => {
         let results = [];
         data.forEach(datum => {
             let today = moment().format("YYYY-DD-MM");
-            today = "2019-25-03";
+            // today = "2019-25-03";
             let no_format_date = new Date(datum.tds[4]).toUTCString();
             let date = moment(no_format_date).format("YYYY-DD-MM");
             if(today === date){
@@ -132,7 +132,5 @@ const bot = () => {
     })
     .catch(err => logger.debug(err));
 }
-
-bot();
 
 module.exports = bot;
