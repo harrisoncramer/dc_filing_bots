@@ -41,9 +41,9 @@ const fetchContracts = async (url) => {
     ]);    
     
     await pendingXHR.waitForAllXhrFinished();
-    await page.click('.sorting:nth-child(5)');
+    await page.click('#filedReports th:nth-child(5)')
     await pendingXHR.waitForAllXhrFinished();
-    await page.click('.sorting_asc');
+    await page.click('#filedReports th:nth-child(5)');
     await pendingXHR.waitForAllXhrFinished();
     
     let html = await page.content();
