@@ -23,34 +23,54 @@ var transporter = nodemailer.createTransport({
 
 const fetchContracts = async (url) => {
 
-    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
-    const page = await browser.newPage(); // Create new instance of puppet
-    const pendingXHR = new PendingXHR(page);
+    try {
+        const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+        const page = await browser.newPage(); // Create new instance of puppet
+        const pendingXHR = new PendingXHR(page);
 
-    await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
-    await Promise.all([
-        page.click("#agree_statement"),
-        page.waitForNavigation()
-    ]);
 
-    await page.click(".form-check-input");
+        await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
+        await Promise.all([
+            page.click("#agree_statement"),
+            page.waitForNavigation()
+        ]);
 
-    await Promise.all([
-        page.click(".btn-primary"),
-        page.waitForNavigation()
-    ]);    
-    
-    await pendingXHR.waitForAllXhrFinished();
-    await page.click('#filedReports th:nth-child(5)')
-    await pendingXHR.waitForAllXhrFinished();
-    await page.click('#filedReports th:nth-child(5)');
-    await pendingXHR.waitForAllXhrFinished();
-    
-    let html = await page.content();
-    await page.close();
-    await browser.close();
-    return html;
+        await page.click(".form-check-input");
+
+        await Promise.all([
+            page.click(".btn-primary"),
+            page.waitForNavigation()
+        ]);    
+        
+        await pendingXHR.waitForAllXhrFinished();
+        await page.click('#filedReports th:nth-child(5)')
+        await pendingXHR.waitForAllXhrFinished();
+        await page.click('#filedReports th:nth-child(5)');
+        await pendingXHR.waitForAllXhrFinished();
+        
+        let html = await page.content();
+        await page.close();
+        await browser.close();
+        return html;
+    } catch(err){
+        throw { message: err.message };
+    }
 }
+
+const mailer = (emails, text) => {
+    const promises = emails.map(email => {
+        let HelperOptions = {
+            from: 'FINANCIAL DISCLOSURES <hcramer@nationaljournal.com>',
+            to: email,
+            subject: `Financial Disclosure`,
+            text
+        };
+
+        return transporter.sendMail(HelperOptions);
+    });
+
+    return Promise.all(promises)
+};
 
 const bot = () => {
 
@@ -88,17 +108,22 @@ const bot = () => {
                 })
             };
         });
+
         return results;
     })
     .then(async(results) => {
-        let file = await readFile("./captured/results.json", { encoding: 'utf8' });
-        let JSONfile = JSON.parse(file); // Old data...
-        let newData = results.filter(resObj => !JSONfile.some(jsonObj => jsonObj.link === resObj.link)); // All new objects that aren't in the old array...
-        let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
-        if(newData.length > 0){
-            fs.writeFileSync("./captured/results.json", allData, 'utf8'); // Write file...
-        }
-        return newData; // Return new data only...
+        try {
+            let file = await readFile("./captured/results.json", { encoding: 'utf8' });
+            let JSONfile = JSON.parse(file); // Old data...
+            let newData = results.filter(resObj => !JSONfile.some(jsonObj => jsonObj.link === resObj.link)); // All new objects that aren't in the old array...
+            let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
+            if(newData.length > 0){
+                fs.writeFileSync("./captured/results.json", allData, 'utf8'); // Write file...
+            }
+            return newData; // Return new data only...
+        } catch(err){
+            throw { message: err.message };
+        };
     })
     .then((results) => {
         let text = '–––New filings––– \n';
@@ -107,16 +132,8 @@ const bot = () => {
               let textPlus = `${first} ${last}: ${link}\n`;
               text = text.concat(textPlus);
           });
-        
     
-        let HelperOptions = {
-            from: 'FINANCIAL DISCLOSURES <hcramer@nationaljournal.com>',
-            to: "harrisoncramer@gmail.com",
-            subject: `Financial Disclosure`,
-            text
-        };
-    
-        return transporter.sendMail(HelperOptions);
+        return mailer(["harrisoncramer@gmail.com", "hcramer@nationaljournal.com"], text);
 
         } else {
             return Promise.resolve("No updates");
@@ -124,13 +141,11 @@ const bot = () => {
     })
     .then((res) => {
         let today = moment().format("YYYY-DD-MM");
-        if(res.envelopeTime){
-            logger.info(`Mail Sent –– ${today}`);
-        } else {
-            logger.info(`${res} –– ${today}`);
-        }
+        logger.info(`Mail Sent –– ${today} –– ${JSON.stringify(res)}`);
     })
-    .catch(err => logger.debug(JSON.stringify(err)));
+    .catch(err => {
+        logger.debug(JSON.stringify(err))
+    });
 }
 
 module.exports = bot;
