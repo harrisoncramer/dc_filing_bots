@@ -24,7 +24,7 @@ var transporter = nodemailer.createTransport({
 const fetchContracts = async (url) => {
 
     try {
-        const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+        const browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
         const page = await browser.newPage(); // Create new instance of puppet
         const pendingXHR = new PendingXHR(page);
 
@@ -35,7 +35,7 @@ const fetchContracts = async (url) => {
             page.waitForNavigation()
         ]);
 
-        await page.click(".form-check-input");
+        await page.click('.form-check-input.candidate_filer');
 
         await Promise.all([
             page.click(".btn-primary"),
@@ -60,9 +60,9 @@ const fetchContracts = async (url) => {
 const mailer = (emails, text) => {
     const promises = emails.map(email => {
         let HelperOptions = {
-            from: 'FINANCIAL DISCLOSURES <hcramer@nationaljournal.com>',
+            from: 'FiDi Bot <hcramer@nationaljournal.com>',
             to: email,
-            subject: `Financial Disclosure`,
+            subject: `Financial Disclosure (Senate Candidate)`,
             text
         };
 
@@ -96,7 +96,7 @@ const bot = () => {
         let results = [];
         data.forEach(datum => {
             let today = moment().format("YYYY-DD-MM");
-            // today = "2019-25-03";
+            today = "2019-01-03";
             let no_format_date = new Date(datum.tds[4]).toUTCString();
             let date = moment(no_format_date).format("YYYY-DD-MM");
             if(today === date){
@@ -133,7 +133,7 @@ const bot = () => {
               text = text.concat(textPlus);
           });
     
-        return mailer(["harrisoncramer@gmail.com", "hcramer@nationaljournal.com"], text);
+        return mailer(["harrisoncramer@gmail.com"], text);
 
         } else {
             return Promise.resolve("No updates");
@@ -141,7 +141,7 @@ const bot = () => {
     })
     .then((res) => {
         let today = moment().format("YYYY-DD-MM");
-        logger.info(`Mail Sent –– ${today} –– ${JSON.stringify(res)}`);
+        logger.info(`Senate Candidate Check –– ${today} –– ${JSON.stringify(res)}`);
     })
     .catch(err => {
         logger.debug(JSON.stringify(err))
