@@ -130,7 +130,7 @@ const bot = () => {
             logger.info(`${res} –– ${today}`);
         }
     })
-    .catch(err => logger.debug(err));
+    .catch(err => logger.debug(JSON.stringify(err)));
 }
 
 module.exports = bot;
