@@ -24,7 +24,7 @@ var transporter = nodemailer.createTransport({
 const fetchContracts = async (url) => {
 
     try {
-        const browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+        const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
         const page = await browser.newPage(); // Create new instance of puppet
         const pendingXHR = new PendingXHR(page);
 
@@ -96,7 +96,7 @@ const bot = () => {
         let results = [];
         data.forEach(datum => {
             let today = moment().format("YYYY-DD-MM");
-            today = "2019-01-03";
+            // today = "2019-01-03";
             let no_format_date = new Date(datum.tds[4]).toUTCString();
             let date = moment(no_format_date).format("YYYY-DD-MM");
             if(today === date){
