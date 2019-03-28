@@ -24,7 +24,7 @@ var transporter = nodemailer.createTransport({
 const fetchContracts = async (url) => {
 
     try {
-        const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+        const browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
         const page = await browser.newPage(); // Create new instance of puppet
         const pendingXHR = new PendingXHR(page);
 
@@ -42,11 +42,15 @@ const fetchContracts = async (url) => {
             page.waitForNavigation()
         ]);    
         
-        await pendingXHR.waitForAllXhrFinished();
-        await page.click('#filedReports th:nth-child(5)')
-        await pendingXHR.waitForAllXhrFinished();
-        await page.click('#filedReports th:nth-child(5)');
-        await pendingXHR.waitForAllXhrFinished();
+        await Promise.all([
+            page.click('#filedReports th:nth-child(5)'),
+            page.waitForResponse('https://efdsearch.senate.gov/search/report/data/')
+        ]);
+
+        await Promise.all([
+            page.click('#filedReports th:nth-child(5)'),
+            page.waitForResponse('https://efdsearch.senate.gov/search/report/data/')
+        ]);
         
         let html = await page.content();
         await page.close();
@@ -147,5 +151,7 @@ const bot = () => {
         logger.debug(JSON.stringify(err))
     });
 }
+
+bot();
 
 module.exports = bot;
