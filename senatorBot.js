@@ -42,11 +42,15 @@ const fetchContracts = async (url) => {
             page.waitForNavigation()
         ]);    
         
-        await pendingXHR.waitForAllXhrFinished();
-        await page.click('#filedReports th:nth-child(5)')
-        await pendingXHR.waitForAllXhrFinished();
-        await page.click('#filedReports th:nth-child(5)');
-        await pendingXHR.waitForAllXhrFinished();
+        await Promise.all([
+            page.click('#filedReports th:nth-child(5)'),
+            page.waitForResponse('https://efdsearch.senate.gov/search/report/data/')
+        ]);
+
+        await Promise.all([
+            page.click('#filedReports th:nth-child(5)'),
+            page.waitForResponse('https://efdsearch.senate.gov/search/report/data/')
+        ]);
         
         let html = await page.content();
         await page.close();
