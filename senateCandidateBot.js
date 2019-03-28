@@ -145,7 +145,7 @@ const bot = () => {
     })
     .then((res) => {
         let today = moment().format("YYYY-DD-MM");
-        logger.info(`Senate Candidate Check –– ${today} –– ${JSON.stringify(res)}`);
+        logger.info(`Senate Candidate Check –– ${JSON.stringify(res)}`);
     })
     .catch(err => {
         logger.debug(JSON.stringify(err))

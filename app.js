@@ -6,7 +6,7 @@ const logger = require("./logger");
 logger.info("App running...");
 
 cron.schedule('*/15 * * * *', async () => {
-    logger.info("Starting checks...");
+    logger.info(`Starting checks...`);
     await senatorBot();
     await senateCandidateBot();
 });
