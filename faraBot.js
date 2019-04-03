@@ -47,7 +47,7 @@ const mailer = (emails, text) => {
 const fetchFara = async (url) => { 
     try { // Connect to page, get all links...
         
-        let browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+        let browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
         let page = await browser.newPage(); // Create new instance of puppet
         
         await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
@@ -92,7 +92,7 @@ const fetchFara = async (url) => {
 
 const bot = () => {
     let today = moment().format("MM DD YYYY");
-            today = '03 18 2019';
+            // today = '03 18 2019';
         const todayUri = today.replace(/\s/g,"\%2F"); // Create uri string...
         const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
@@ -132,7 +132,5 @@ const bot = () => {
         logger.debug(JSON.stringify(err))
     });
 };
-
-bot();
 
 module.exports = bot;
