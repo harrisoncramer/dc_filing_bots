@@ -1,5 +1,5 @@
 const senatorBot = require("./senatorBot");
 const senateCandidateBot = require("./senateCandidateBot");
-const faraBot = require("./newFaraBot");
+const faraBot = require("./faraBot");
 
 faraBot();

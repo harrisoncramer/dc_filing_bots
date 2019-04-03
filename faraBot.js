@@ -92,7 +92,7 @@ const fetchFara = async (url) => {
 
 const bot = () => {
     let today = moment().format("MM DD YYYY");
-            // today = '03 18 2019';
+            // today = '03 13 2019';
         const todayUri = today.replace(/\s/g,"\%2F"); // Create uri string...
         const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
@@ -101,7 +101,7 @@ const bot = () => {
         try {
             let file = await readFile("./captured/fara.json", { encoding: 'utf8' });
             let JSONfile = JSON.parse(file); // Old data...
-            let newData = links.filter(resObj => !JSONfile.some(jsonObj => (jsonObj.registrant === resObj.link && jsonObj.allLinks === resObj.allLinks))); // All new objects that aren't in the old array...
+            let newData = links.filter(resObj => !JSONfile.some(jsonObj => (jsonObj.registrant === resObj.registrant && jsonObj.allLinks.some(link => resObj.allLinks.includes(link))))); // All new objects that aren't in the old array...
             let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
             if(newData.length > 0){
                 fs.writeFileSync("./captured/fara.json", allData, 'utf8'); // Write file...
@@ -114,19 +114,21 @@ const bot = () => {
     .then(async(res) => {
 
         let registrants = res.map(data => data.registrant);
-        logger.info(`Fara Check –– ${JSON.stringify(registrants)}`);
-
         let text = '–––New filings––– \n';
         if(res.length > 0){
             res.forEach(({ registrant, allLinks }) => {
                 text = text.concat(registrant).concat("\n");
-                allLinks.forEach(link => text = text.concat("- " + link + "\n"));
+                allLinks.forEach(link => text = text.concat(link + "\n"));
                 text = text.concat("\n");
             });
             return mailer(["harrisoncramer@gmail.com"], text);
         } else {
             return Promise.resolve("No updates");
         }
+    })
+    .then((res) => {
+        let today = moment().format("YYYY-DD-MM");
+        logger.info(`FARA Check –– ${JSON.stringify(res)}`);
     })
     .catch(err => {
         logger.debug(JSON.stringify(err))
