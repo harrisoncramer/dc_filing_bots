@@ -26,7 +26,7 @@ const fetchFara = async (url) => {
         const page = await browser.newPage(); // Create new instance of puppet
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
         const assetUrls = await page.$$eval("div[id='apexir_DATA_PANEL'] table td[headers='LINK']", links => links.map(link => link.href));
-
+        
         return { assetUrls, page, browser };
 
     } catch(err){
@@ -54,13 +54,12 @@ const bot = () => {
     let today = moment().format("MM DD YYYY");
     today = '03 18 2019';
     today = today.replace(/\s/g,"\%2F");
-
+    debugger;
     let link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${today},${today}`;
 
     fetchFara(link)
     .then(async({ assetUrls, page, browser }) => {
 
-        console.log(assetUrls);
         await page.close();
         await browser.close();
 
@@ -139,6 +138,5 @@ const bot = () => {
     });
 }
 
-bot();
 
 module.exports = bot;
