@@ -4,7 +4,6 @@
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
     "nodemailer": "^5.1.1",
-    "pending-xhr-puppeteer": "^1.0.17",
     "puppeteer": "^1.13.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",

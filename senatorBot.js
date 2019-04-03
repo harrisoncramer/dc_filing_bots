@@ -6,7 +6,6 @@ const config = require("./keys/config");
 const logger = require("./logger");
 const fs = require("fs");
 const util = require("util");
-const { PendingXHR } = require('pending-xhr-puppeteer');
 
 let readFile = util.promisify(fs.readFile);
 
@@ -26,8 +25,15 @@ const fetchContracts = async (url) => {
     try {
         const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
         const page = await browser.newPage(); // Create new instance of puppet
-        const pendingXHR = new PendingXHR(page);
 
+        await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
+        page.on('request', (request) => {
+            if(['image', 'stylesheet'].includes(request.resourceType())){
+                request.abort();
+            } else {
+                request.continue();
+            }
+        });
 
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
         await Promise.all([
