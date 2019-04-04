@@ -7,9 +7,7 @@ const users = require("./keys/users");
 
 logger.info("App running...");
 
-cron.schedule('*/15 * * * *', async () => {
-    logger.info(`Starting checks...`);
-    
+cron.schedule('*/15 * * * *', async () => {    
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
 
@@ -21,14 +19,15 @@ cron.schedule('*/15 * * * *', async () => {
             request.continue();
         }
     });
+    logger.info(`Chrome Launched...`);
     
-
-    logger.info(`Starting checks...`);
     await senatorBot(users, page);
     await senateCandidateBot(users, page); // This sequence matters, because agree statement will not be present...
     await faraBot(users, page);
 
     await page.close();
     await browser.close();
+    logger.info(`Chrome Closed.`);
+
 
 });
