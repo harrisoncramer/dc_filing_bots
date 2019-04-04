@@ -94,7 +94,7 @@ const fetchFara = async (url) => {
     }
 };
 
-const bot = () => {
+const bot = (users) => {
     let today = moment().format("MM DD YYYY");
             // today = '03 13 2019';
         const todayUri = today.replace(/\s/g,"\%2F"); // Create uri string...
@@ -125,7 +125,9 @@ const bot = () => {
                 allLinks.forEach(link => text = text.concat(link + "\n"));
                 text = text.concat("\n");
             });
-            return mailer(["harrisoncramer@gmail.com"], text);
+
+            let emails = users.map(({ email }) => email);
+            return mailer(emails, text);
         } else {
             return Promise.resolve("No updates");
         }

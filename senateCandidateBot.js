@@ -82,7 +82,7 @@ const mailer = (emails, text) => {
     return Promise.all(promises)
 };
 
-const bot = () => {
+const bot = (users) => {
 
     fetchContracts("https://efdsearch.senate.gov/search/")
     .then(async(html) => {
@@ -106,7 +106,7 @@ const bot = () => {
         let results = [];
         data.forEach(datum => {
             let today = moment().format("YYYY-DD-MM");
-            // today = "2019-01-03";
+                today = "2019-01-03";
             let no_format_date = new Date(datum.tds[4]).toUTCString();
             let date = moment(no_format_date).format("YYYY-DD-MM");
             if(today === date){
@@ -143,7 +143,8 @@ const bot = () => {
               text = text.concat(textPlus);
           });
     
-        return mailer(["harrisoncramer@gmail.com"], text);
+        let emails = users.map(({ email }) => email);
+        return mailer(emails, text);
 
         } else {
             return Promise.resolve("No updates");
