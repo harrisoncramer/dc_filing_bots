@@ -59,27 +59,31 @@ const fetchFara = async (url) => {
             }
         });
         
-        await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
-        let assetUrls = await page.$$eval("div[id='apexir_DATA_PANEL'] table td[headers='LINK'] a:first-child", links => links.map(a => a.href)); // Get all links w/in table for current date..
-    
-        const getLinks = async (url) => {
+        await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
+        const tableHandle = await page.$("div[id='apexir_DATA_PANEL'] tbody"); // page.$("div[id='apexir_DATA_PANEL'] tbody tr[class='even']");
+        const html = await page.evaluate(body => body.innerHTML, tableHandle);
+        await tableHandle.dispose();
+
+        let $ = cheerio.load(html);
+        let links = $('td a:first-child').map((i, link) => $(link).attr("href")).toArray();
+        let names = $("td[headers='NAME']").map((i,td) => $(td).text()).toArray();
+
+        links = links.map((link, i) => ({ url: `https://efile.fara.gov/pls/apex/${link}`, registrant: names[i] }));
+        const getLinks = async ({ url, registrant }) => {
             
             await page.goto(url, { waitUntil: 'networkidle2' }); // Navigate to each page...
 
-            let rowDataEven = await page.$$eval("div[id='apexir_DATA_PANEL'] tbody tr[class='even']", (trs) => trs.map(tr => tr.innerHTML));
-            let rowDataOdd = await page.$$eval("div[id='apexir_DATA_PANEL'] tbody tr[class='odd']", (trs) => trs.map(tr => tr.innerHTML));
-            let rowData = rowDataEven.concat(rowDataOdd);
-            let registrant = await page.$$eval("div[id='apexir_DATA_PANEL'] tbody td[headers='REGISTRANT_NAME']", (tds) => tds.map(td => td.innerHTML)); 
-                registrant = registrant[0]; // These should all be identical...
+            const bodyHandle = await page.$("body div[id='apexir_DATA_PANEL'] tbody"); // page.$("div[id='apexir_DATA_PANEL'] tbody tr[class='even']");
+            const html = await page.evaluate(body => body.innerHTML, bodyHandle);
+            await bodyHandle.dispose();
 
-            let allLinks = rowData.map(row => {
-                let $ = cheerio.load(row);
-                let newLink = $('a').map((i, link) => $(link).attr("href")).toArray();
-                return newLink[0];
-            });
+            let $ = cheerio.load(html);
+            let allLinks = $('a').map((i, link) => $(link).attr("href")).toArray();
+
             return { allLinks, registrant };
         };
-        const promises = await asyncForEach(assetUrls, (url) => getLinks(url));
+
+        const promises = await asyncForEach(links, ({ url, registrant }) => getLinks({ url, registrant }));
         await page.close();
         await browser.close();
         return promises;
