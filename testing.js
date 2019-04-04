@@ -5,12 +5,14 @@ const faraBot = require("./faraBot");
 const logger = require("./logger");
 const users = require("./keys/users");
 const pupeteer = require("puppeteer");
+const moment = require("moment");
 
 logger.info("App running...");
 
 (async () => {
-    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    const browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
+    const today = moment();
 
     await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
     page.on('request', (request) => {
@@ -20,11 +22,12 @@ logger.info("App running...");
             request.continue();
         }
     });
+    
     logger.info(`Chrome Launched...`);
     
-    await senatorBot(users, page);
-    await senateCandidateBot(users, page); // This sequence matters, because agree statement will not be present...
-    await faraBot(users, page);
+    await senatorBot(users, page, today.format("YYYY-DD-MM"));
+    await senateCandidateBot(users, page, today.format("YYYY-DD-MM")); // This sequence matters, because agree statement will not be present...
+    await faraBot(users, page, today.format("MM-DD-YYYY"));
 
     await page.close();
     await browser.close();

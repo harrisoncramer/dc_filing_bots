@@ -1,30 +1,18 @@
-const pupeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const moment = require("moment");
-const nodemailer = require("nodemailer");
-const config = require("./keys/config");
 const logger = require("./logger");
 const fs = require("fs");
 const util = require("util");
 
-let readFile = util.promisify(fs.readFile);
+const { mailer } = require("./util");
 
-var transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  auth: {
-    type: "OAuth2",
-    user: config.auth.user,
-    clientId: config.auth.clientId,
-    clientSecret: config.auth.clientSecret,
-    refreshToken: config.auth.refreshToken
-  }
-});
+let readFile = util.promisify(fs.readFile);
 
 const fetchContracts = async (url, page) => {
 
     try {
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
-        
+
         await page.click('.form-check-input.candidate_filer');
 
         await Promise.all([
@@ -41,6 +29,8 @@ const fetchContracts = async (url, page) => {
             page.click('#filedReports th:nth-child(5)'),
             page.waitForResponse('https://efdsearch.senate.gov/search/report/data/')
         ]);
+
+        await page.waitFor(1000)
         
         let html = await page.content();
         return html;
@@ -49,22 +39,7 @@ const fetchContracts = async (url, page) => {
     }
 }
 
-const mailer = (emails, text) => {
-    const promises = emails.map(email => {
-        let HelperOptions = {
-            from: 'FiDi Bot <hcramer@nationaljournal.com>',
-            to: email,
-            subject: `Financial Disclosure (Senate Candidate)`,
-            text
-        };
-
-        return transporter.sendMail(HelperOptions);
-    });
-
-    return Promise.all(promises)
-};
-
-const bot = (users, page) => new Promise((resolve) => {
+const bot = (users, page, today) => new Promise((resolve) => {
 
     fetchContracts("https://efdsearch.senate.gov/search/", page)
     .then(async(html) => {
@@ -87,8 +62,6 @@ const bot = (users, page) => new Promise((resolve) => {
 
         let results = [];
         data.forEach(datum => {
-            let today = moment().format("YYYY-DD-MM");
-                today = "2019-01-03";
             let no_format_date = new Date(datum.tds[4]).toUTCString();
             let date = moment(no_format_date).format("YYYY-DD-MM");
             if(today === date){
@@ -126,7 +99,7 @@ const bot = (users, page) => new Promise((resolve) => {
           });
     
         let emails = users.map(({ email }) => email);
-        return mailer(emails, text);
+        return mailer(emails, text, "Senate Candidates");
 
         } else {
             return Promise.resolve("No updates");

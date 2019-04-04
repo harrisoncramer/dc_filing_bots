@@ -1,48 +1,10 @@
-const pupeteer = require("puppeteer");
-const moment = require("moment");
-const nodemailer = require("nodemailer");
-const config = require("./keys/config");
 const logger = require("./logger");
 const fs = require("fs");
 const util = require("util");
 let readFile = util.promisify(fs.readFile);
 const cheerio = require("cheerio");
 
-var transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  auth: {
-    type: "OAuth2",
-    user: config.auth.user,
-    clientId: config.auth.clientId,
-    clientSecret: config.auth.clientSecret,
-    refreshToken: config.auth.refreshToken
-  }
-});
-
-const asyncForEach = async(array, callback) => {
-    let results = [];
-    for (let index = 0; index < array.length; index++) {
-        let result = await callback(array[index]);
-        results.push(result);
-    }
-    return results;
-};
-
-
-const mailer = (emails, text) => {
-    const promises = emails.map(email => {
-        let HelperOptions = {
-            from: 'FiDi Bot <hcramer@nationaljournal.com>',
-            to: email,
-            subject: `FARA Disclosure`,
-            text
-        };
-
-        return transporter.sendMail(HelperOptions);
-    });
-
-    return Promise.all(promises)
-};
+const { mailer, asyncForEach } = require("./util");
 
 const fetchFara = async (url, page) => { 
     try { // Connect to page, get all links...        
@@ -79,11 +41,10 @@ const fetchFara = async (url, page) => {
     }
 };
 
-const bot = (users, page) => new Promise((resolve) => {
-    let today = moment().format("MM DD YYYY");
-            // today = '03 13 2019';
-        const todayUri = today.replace(/\s/g,"\%2F"); // Create uri string...
-        const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
+const bot = (users, page, today) => new Promise((resolve) => {
+
+    const todayUri = today.replace(/-/g,"\%2F"); // Create uri string...
+    const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
     fetchFara(link, page)
         .then(async(links) => {
@@ -102,7 +63,6 @@ const bot = (users, page) => new Promise((resolve) => {
         })
         .then(async(res) => {
 
-            let registrants = res.map(data => data.registrant);
             let text = '–––New filings––– \n';
             if(res.length > 0){
                 res.forEach(({ registrant, allLinks }) => {
@@ -112,7 +72,7 @@ const bot = (users, page) => new Promise((resolve) => {
                 });
 
                 let emails = users.map(({ email }) => email);
-                return mailer(emails, text);
+                return mailer(emails, text, 'Foreign Lobbyist(s)');
             } else {
                 return Promise.resolve("No updates");
             }
