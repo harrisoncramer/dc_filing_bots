@@ -1,19 +1,23 @@
 const cheerio = require("cheerio");
 const moment = require("moment");
-const logger = require("./logger");
+const logger = require("../logger");
 const fs = require("fs");
 const util = require("util");
 
-const { mailer } = require("./util");
+const { mailer } = require("../util");
 
 let readFile = util.promisify(fs.readFile);
 
 const fetchContracts = async (url, page) => {
-
+    
     try {
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
+        await Promise.all([
+            page.click("#agree_statement"),
+            page.waitForNavigation()
+        ]);
 
-        await page.click('.form-check-input.candidate_filer');
+        await page.click(".form-check-input");
 
         await Promise.all([
             page.click(".btn-primary"),
@@ -29,10 +33,11 @@ const fetchContracts = async (url, page) => {
             page.click('#filedReports th:nth-child(5)'),
             page.waitForResponse('https://efdsearch.senate.gov/search/report/data/')
         ]);
-
-        await page.waitFor(1000)
         
+        await page.waitFor(1000)
+
         let html = await page.content();
+        
         return html;
     } catch(err){
         throw { message: err.message };
@@ -97,20 +102,20 @@ const bot = (users, page, today) => new Promise((resolve) => {
               let textPlus = `${first} ${last}: ${link}\n`;
               text = text.concat(textPlus);
           });
-    
+        
         let emails = users.map(({ email }) => email);
-        return mailer(emails, text, "Senate Candidates");
+        return mailer(emails, text, 'Senate Disclosure');
 
         } else {
             return Promise.resolve("No updates");
         }
     })
     .then((res) => {
-        logger.info(`Senate Candidate Check –– ${JSON.stringify(res)}`);
+        logger.info(`Senator Check –– ${JSON.stringify(res)}`);
         resolve();
     })
     .catch(err => {
-        logger.debug(JSON.stringify(err))
+        logger.debug(JSON.stringify(err));
     });
 });
 

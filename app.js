@@ -1,9 +1,13 @@
 const cron = require("node-cron");
-const senatorBot = require("./senatorBot");
-const senateCandidateBot = require("./senateCandidateBot");
-const faraBot = require("./faraBot");
+const pupeteer = require("puppeteer");
+const moment = require("moment");
+
 const logger = require("./logger");
 const users = require("./keys/users");
+
+const senatorBot = require("./bots/senatorBot");
+const senateCandidateBot = require("./bots/senateCandidateBot");
+const faraBot = require("./bots/faraBot");
 
 logger.info("App running...");
 

@@ -1,10 +1,10 @@
-const logger = require("./logger");
+const logger = require("../logger");
 const fs = require("fs");
 const util = require("util");
 let readFile = util.promisify(fs.readFile);
 const cheerio = require("cheerio");
 
-const { mailer, asyncForEach } = require("./util");
+const { mailer, asyncForEach } = require("../util");
 
 const fetchFara = async (url, page) => { 
     try { // Connect to page, get all links...        
