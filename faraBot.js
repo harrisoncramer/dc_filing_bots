@@ -44,21 +44,8 @@ const mailer = (emails, text) => {
     return Promise.all(promises)
 };
 
-const fetchFara = async (url) => { 
-    try { // Connect to page, get all links...
-        
-        let browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
-        let page = await browser.newPage(); // Create new instance of puppet
-        
-        await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
-        page.on('request', (request) => {
-            if(['image', 'stylesheet'].includes(request.resourceType())){
-                request.abort();
-            } else {
-                request.continue();
-            }
-        });
-        
+const fetchFara = async (url, page) => { 
+    try { // Connect to page, get all links...        
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
         const tableHandle = await page.$("div[id='apexir_DATA_PANEL'] tbody"); // page.$("div[id='apexir_DATA_PANEL'] tbody tr[class='even']");
         const html = await page.evaluate(body => body.innerHTML, tableHandle);
@@ -84,8 +71,6 @@ const fetchFara = async (url) => {
         };
 
         const promises = await asyncForEach(links, ({ url, registrant }) => getLinks({ url, registrant }));
-        await page.close();
-        await browser.close();
         return promises;
 
     }
@@ -94,51 +79,51 @@ const fetchFara = async (url) => {
     }
 };
 
-const bot = (users) => {
+const bot = (users, page) => new Promise((resolve) => {
     let today = moment().format("MM DD YYYY");
             // today = '03 13 2019';
         const todayUri = today.replace(/\s/g,"\%2F"); // Create uri string...
         const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
-    fetchFara(link)
-    .then(async(links) => {
-        try {
-            let file = await readFile("./captured/fara.json", { encoding: 'utf8' });
-            let JSONfile = JSON.parse(file); // Old data...
-            let newData = links.filter(resObj => !JSONfile.some(jsonObj => (jsonObj.registrant === resObj.registrant && jsonObj.allLinks.some(link => resObj.allLinks.includes(link))))); // All new objects that aren't in the old array...
-            let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
-            if(newData.length > 0){
-                fs.writeFileSync("./captured/fara.json", allData, 'utf8'); // Write file...
+    fetchFara(link, page)
+        .then(async(links) => {
+            try {
+                let file = await readFile("./captured/fara.json", { encoding: 'utf8' });
+                let JSONfile = JSON.parse(file); // Old data...
+                let newData = links.filter(resObj => !JSONfile.some(jsonObj => (jsonObj.registrant === resObj.registrant && jsonObj.allLinks.some(link => resObj.allLinks.includes(link))))); // All new objects that aren't in the old array...
+                let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
+                if(newData.length > 0){
+                    fs.writeFileSync("./captured/fara.json", allData, 'utf8'); // Write file...
+                }
+                return newData; // Return new data only...
+            } catch(err){
+                throw { message: err.message };
+            };
+        })
+        .then(async(res) => {
+
+            let registrants = res.map(data => data.registrant);
+            let text = '–––New filings––– \n';
+            if(res.length > 0){
+                res.forEach(({ registrant, allLinks }) => {
+                    text = text.concat(registrant).concat("\n");
+                    allLinks.forEach(link => text = text.concat(link + "\n"));
+                    text = text.concat("\n");
+                });
+
+                let emails = users.map(({ email }) => email);
+                return mailer(emails, text);
+            } else {
+                return Promise.resolve("No updates");
             }
-            return newData; // Return new data only...
-        } catch(err){
-            throw { message: err.message };
-        };
-    })
-    .then(async(res) => {
-
-        let registrants = res.map(data => data.registrant);
-        let text = '–––New filings––– \n';
-        if(res.length > 0){
-            res.forEach(({ registrant, allLinks }) => {
-                text = text.concat(registrant).concat("\n");
-                allLinks.forEach(link => text = text.concat(link + "\n"));
-                text = text.concat("\n");
-            });
-
-            let emails = users.map(({ email }) => email);
-            return mailer(emails, text);
-        } else {
-            return Promise.resolve("No updates");
-        }
-    })
-    .then((res) => {
-        let today = moment().format("YYYY-DD-MM");
-        logger.info(`FARA Check –– ${JSON.stringify(res)}`);
-    })
-    .catch(err => {
-        logger.debug(JSON.stringify(err))
-    });
-};
+        })
+        .then((res) => {
+            logger.info(`FARA Check –– ${JSON.stringify(res)}`);
+            resolve();
+        })
+        .catch(err => {
+            logger.debug(JSON.stringify(err))
+        });
+});
 
 module.exports = bot;

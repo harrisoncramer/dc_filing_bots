@@ -20,27 +20,11 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-const fetchContracts = async (url) => {
+const fetchContracts = async (url, page) => {
 
     try {
-        const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
-        const page = await browser.newPage(); // Create new instance of puppet
-
-        await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
-        page.on('request', (request) => {
-            if(['image', 'stylesheet'].includes(request.resourceType())){
-                request.abort();
-            } else {
-                request.continue();
-            }
-        });
-        
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
-        await Promise.all([
-            page.click("#agree_statement"),
-            page.waitForNavigation()
-        ]);
-
+        
         await page.click('.form-check-input.candidate_filer');
 
         await Promise.all([
@@ -59,8 +43,6 @@ const fetchContracts = async (url) => {
         ]);
         
         let html = await page.content();
-        await page.close();
-        await browser.close();
         return html;
     } catch(err){
         throw { message: err.message };
@@ -82,9 +64,9 @@ const mailer = (emails, text) => {
     return Promise.all(promises)
 };
 
-const bot = (users) => {
+const bot = (users, page) => new Promise((resolve) => {
 
-    fetchContracts("https://efdsearch.senate.gov/search/")
+    fetchContracts("https://efdsearch.senate.gov/search/", page)
     .then(async(html) => {
         let $ = cheerio.load(html);
 
@@ -151,12 +133,12 @@ const bot = (users) => {
         }
     })
     .then((res) => {
-        let today = moment().format("YYYY-DD-MM");
         logger.info(`Senate Candidate Check –– ${JSON.stringify(res)}`);
+        resolve();
     })
     .catch(err => {
         logger.debug(JSON.stringify(err))
     });
-}
+});
 
 module.exports = bot;
