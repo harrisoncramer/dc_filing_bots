@@ -11,10 +11,11 @@ const faraBot = require("./bots/faraBot");
 
 logger.info("App running...");
 
-cron.schedule('*/15 * * * *', async () => {    
+cron.schedule('*/2 * * * *', async () => {    
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
-    const today = moment();
+    let today = moment();
+    today = moment("2019-04-02")
 
     await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
     page.on('request', (request) => {

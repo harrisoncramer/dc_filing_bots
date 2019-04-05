@@ -1,4 +1,3 @@
-const cron = require("node-cron");
 const pupeteer = require("puppeteer");
 const moment = require("moment");
 
