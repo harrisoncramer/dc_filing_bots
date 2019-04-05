@@ -103,7 +103,7 @@ const bot = (users, page, today) => new Promise((resolve) => {
               text = text.concat(textPlus);
           });
         
-        let emails = users.map(({ email }) => email);
+        let emails = users.filter(user => user.senate).map(({ email }) => email);
         return mailer(emails, text, 'Senate Disclosure');
 
         } else {

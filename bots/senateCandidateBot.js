@@ -98,8 +98,8 @@ const bot = (users, page, today) => new Promise((resolve) => {
               text = text.concat(textPlus);
           });
     
-        let emails = users.map(({ email }) => email);
-        return mailer(emails, text, "Senate Candidates");
+          let emails = users.filter(user => user.senateCandidate).map(({ email }) => email);
+          return mailer(emails, text, "Senate Candidates");
 
         } else {
             return Promise.resolve("No updates");

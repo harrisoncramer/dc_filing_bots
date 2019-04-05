@@ -71,7 +71,7 @@ const bot = (users, page, today) => new Promise((resolve) => {
                     text = text.concat("\n");
                 });
 
-                let emails = users.map(({ email }) => email);
+                let emails = users.filter(user => user.fara).map(({ email }) => email);
                 return mailer(emails, text, 'Foreign Lobbyist(s)');
             } else {
                 return Promise.resolve("No updates");
