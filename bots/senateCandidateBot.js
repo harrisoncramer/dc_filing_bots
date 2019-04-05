@@ -39,7 +39,7 @@ const fetchContracts = async (url, page) => {
     }
 }
 
-const bot = (users, page, today) => new Promise((resolve) => {
+const bot = (users, page, today) => new Promise((resolve, reject) => {
 
     fetchContracts("https://efdsearch.senate.gov/search/", page)
     .then(async(html) => {
@@ -78,7 +78,7 @@ const bot = (users, page, today) => new Promise((resolve) => {
     })
     .then(async(results) => {
         try {
-            let file = await readFile("./captured/senateCandidates.json", { encoding: 'utf8' });
+            let file = await readFile("./captured/senateCandsidates.json", { encoding: 'utf8' });
             let JSONfile = JSON.parse(file); // Old data...
             let newData = results.filter(resObj => !JSONfile.some(jsonObj => jsonObj.link === resObj.link)); // All new objects that aren't in the old array...
             let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
@@ -110,7 +110,7 @@ const bot = (users, page, today) => new Promise((resolve) => {
         resolve();
     })
     .catch(err => {
-        logger.debug(JSON.stringify(err))
+        reject(err);
     });
 });
 

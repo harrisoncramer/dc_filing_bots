@@ -44,7 +44,7 @@ const fetchContracts = async (url, page) => {
     }
 }
 
-const bot = (users, page, today) => new Promise((resolve) => {
+const bot = (users, page, today) => new Promise((resolve, reject) => {
 
     fetchContracts("https://efdsearch.senate.gov/search/", page)
     .then(async(html) => {
@@ -115,7 +115,7 @@ const bot = (users, page, today) => new Promise((resolve) => {
         resolve();
     })
     .catch(err => {
-        logger.debug(JSON.stringify(err));
+        reject(err);
     });
 });
 

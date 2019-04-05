@@ -41,7 +41,7 @@ const fetchFara = async (url, page) => {
     }
 };
 
-const bot = (users, page, today) => new Promise((resolve) => {
+const bot = (users, page, today) => new Promise((resolve, reject) => {
 
     const todayUri = today.replace(/-/g,"\%2F"); // Create uri string...
     const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
@@ -82,7 +82,7 @@ const bot = (users, page, today) => new Promise((resolve) => {
             resolve();
         })
         .catch(err => {
-            logger.debug(JSON.stringify(err))
+            reject(err);
         });
 });
 

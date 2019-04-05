@@ -28,9 +28,23 @@ cron.schedule('*/15 * * * *', async () => {
     
     logger.info(`Chrome Launched...`);
     
-    await senatorBot(users, page, today.format("YYYY-DD-MM"));
-    await senateCandidateBot(users, page, today.format("YYYY-DD-MM")); // This sequence matters, because agree statement will not be present...
-    await faraBot(users, page, today.format("MM-DD-YYYY"));
+    try {
+        await senatorBot(users, page, today.format("YYYY-DD-MM"));
+    } catch(err) {
+        logger.debug(JSON.stringify(err));
+    }
+
+    try {
+        await senateCandidateBot(users, page, today.format("YYYY-DD-MM")); // This sequence matters, because agree statement will not be present...
+    } catch(err) {
+        logger.debug(JSON.stringify(err));
+    }
+
+    try {
+        await faraBot(users, page, today.format("MM-DD-YYYY"));
+    } catch(err) {
+        logger.debug(JSON.stringify(err));
+    }
 
     await page.close();
     await browser.close();
