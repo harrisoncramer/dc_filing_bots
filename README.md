@@ -16,7 +16,7 @@
         }
         ]
   
-    module.exports = users;
+        module.exports = users;
 
   3) Still in the keys folder, add a config.js for your mailer app. This must be configured through gmail's o-auth system:
 
