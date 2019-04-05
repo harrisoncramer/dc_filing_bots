@@ -1,4 +1,4 @@
-You must do a number of things to set up the bots.
+**There's a few things you need to set up.**
 
 1) Install dependencies for headless Chrome
          
@@ -31,3 +31,5 @@ You must do a number of things to set up the bots.
           module.exports = {
             auth
           }
+
+I'm running this through PM2, on a Ubuntu 18.02 server on Digital Ocean.
