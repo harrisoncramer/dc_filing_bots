@@ -11,7 +11,7 @@ const faraBot = require("./bots/faraBot");
 
 logger.info("App running...");
 
-cron.schedule('*/2 * * * *', async () => {    
+cron.schedule('*/15 * * * *', async () => {    
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
     let today = moment();
