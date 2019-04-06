@@ -1,15 +1,15 @@
 
 const nodemailer = require("nodemailer");
-const config = require("../keys/config");
+const { nodemailerConfig } = require("../keys/config");
 
 var transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     auth: {
       type: "OAuth2",
-      user: config.auth.user,
-      clientId: config.auth.clientId,
-      clientSecret: config.auth.clientSecret,
-      refreshToken: config.auth.refreshToken
+      user: nodemailerConfig.user,
+      clientId: nodemailerConfig.clientId,
+      clientSecret: nodemailerConfig.clientSecret,
+      refreshToken: nodemailerConfig.refreshToken
     }
   });
   

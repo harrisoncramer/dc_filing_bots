@@ -4,3 +4,4 @@ config.js
 results.log
 testing.js
 users.js
+.env
