@@ -12,18 +12,18 @@ const contractBot = require("./bots/dodContracts");
 logger.info("App running...");
 
 (async () => {
-    const browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
-    const today = moment("2019-04-02")
+    const today = moment("2019-04-05")
 
-    // await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
-    // page.on('request', (request) => {
-    //     if(['image', 'stylesheet'].includes(request.resourceType())){
-    //         request.abort();
-    //     } else {
-    //         request.continue();
-    //     }
-    // });
+    await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
+    page.on('request', (request) => {
+        if(['image', 'stylesheet'].includes(request.resourceType())){
+            request.abort();
+        } else {
+            request.continue();
+        }
+    });
     
     logger.info(`Chrome Launched...`);
     

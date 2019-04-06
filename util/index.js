@@ -38,8 +38,17 @@ const asyncForEach = async(array, callback) => {
     return results;
 };
 
+const formatNumber = (number) => {
+    var splitNum;
+    number = Math.abs(number);
+    number = number.toFixed(0);
+    splitNum = number.split('.');
+    splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return splitNum.join(".");
+  }
 
 module.exports = {
     mailer,
-    asyncForEach
+    asyncForEach,
+    formatNumber
 }
