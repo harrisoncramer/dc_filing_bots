@@ -7,7 +7,7 @@ const users = require("./keys/users");
 const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
-const contractBot = require("./bots/dodContracts");
+const contractBot = require("./bots/dodContractBot");
 
 logger.info("App running...");
 
@@ -49,10 +49,10 @@ logger.info("App running...");
     try {
         await contractBot(users, page, today.format("MM-DD-YYYY"));
     } catch(err) {
-        logger.debug(JSON.stringify(err));
+        logger.debug(`DoD-Bots __ ${JSON.stringify(err)}`);
     }
 
     await page.close();
     await browser.close();
-    logger.info(`Chrome Closed.`);
+    logger.info(`Chrome Closed DoD-Checker.`);
 })();

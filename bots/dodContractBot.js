@@ -109,17 +109,25 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
         let results = {};
         let current = null;
         for(i = 0; i < lines.length; i++){
-            if(lines[i].toUpperCase() === lines[i]){
+            if((lines[i].toUpperCase() === lines[i]) && lines[i].indexOf("CORRECTION") === -1){ // Getting rid of those...
                 results[lines[i]] = [];
                 current = lines[i];
                 continue;
             }
-            if(current){
+            if(current && lines[i].indexOf("CORRECTION") === -1){ // Getting rid of those...
                 results[current].push(lines[i]);
             }                
         };
 
-        return { results, link, date };
+        let agencies = Object.keys(results);
+        for(agency of agencies){
+            if(results[agency].length === 0){
+                delete results[agency]
+            }
+        }
+
+
+    return { results, link, date };
     })
     .then(async({ results, link, date }) => { // Write tweets...
 

@@ -8,6 +8,7 @@ const users = require("./keys/users");
 const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
+const contractBot = require("./bots/dodContractBot")
 
 logger.info("App running...");
 
@@ -26,7 +27,7 @@ cron.schedule('*/15 * * * *', async () => {
         }
     });
     
-    logger.info(`Chrome Launched...`);
+    logger.info(`Chrome Launched Bots...`);
     
     try {
         await senatorBot(users, page, today.format("YYYY-DD-MM"));
@@ -43,18 +44,18 @@ cron.schedule('*/15 * * * *', async () => {
     try {
         await faraBot(users, page, today.format("MM-DD-YYYY"));
     } catch(err) {
-        logger.debug(JSON.stringify(err));
+        logger.debug(`Bots –– ${JSON.stringify(err)}`);
     }
 
     await page.close();
     await browser.close();
-    logger.info(`Chrome Closed.`);
+    logger.info(`Chrome Closed Bots.`);
 
 });
 
-cron.schedule('*/15 17-19 * * *', async () => {   
+cron.schedule('*/35 17-20 * * *', async () => {   
     
-    logger.info(`Chrome Launched...`); 
+    logger.info(`Chrome Launched DoD-Checker...`); 
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
     let today = moment();
@@ -72,10 +73,10 @@ cron.schedule('*/15 17-19 * * *', async () => {
     try {
         await contractBot(users, page, today.format("MM-DD-YYYY"));
     } catch(err) {
-        logger.debug(JSON.stringify(err));
+        logger.debug(`DoD-Bots __ ${JSON.stringify(err)}`);
     }
 
     await page.close();
     await browser.close();
-    logger.info(`Chrome Closed.`);
+    logger.info(`Chrome Closed DoD-Checker.`);
 });
