@@ -77,11 +77,23 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
                 let allData = JSON.stringify(JSONfile.concat({ link, date }));
                 // await writeFile(path.resolve(__dirname, "../captured/contracts.json"), allData, 'utf8');
                 const $ = cheerio.load(html);
+                
                 let allDivs = [];
-                let article = await $("div.container div[itemProp='articleBody'] p").each(function(index, value){
+                await $("div.container div[itemProp='articleBody'] p").each(function(index, value){
                     var div = $(this).text();
                     allDivs.push(div);
                 });
+
+                if(allDivs.length === 0){
+                    await $("div.container div[itemProp='articleBody'] div").each(function(index, value){
+                        var div = $(this).text();
+                        allDivs.push(div);
+                    });
+                }
+
+                if(allDivs.length === 0){
+                    throw new Error("Problem scraping data.")
+                }
 
                 let lines = allDivs.filter(ln => (ln.trim() !== "" && ln.substr(0, 1) != "*")).map(ln => ln.trim());
                 return  { link, date, lines };
@@ -188,7 +200,7 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
     }))
     .then((res) => resolve(res)) // resolve the main promise...
     .catch(err => {
-        if(["No results found.", "No updates found.", "Tweets already sent."].includes(err.message)){
+        if(["No results found.", "No updates found.", "Tweets already sent.", "Problem scraping data."].includes(err.message)){
             logger.info(`DoD Contracts Check –– ${err.message}`);
             resolve();
         } else {

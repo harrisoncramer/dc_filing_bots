@@ -51,3 +51,31 @@ cron.schedule('*/15 * * * *', async () => {
     logger.info(`Chrome Closed.`);
 
 });
+
+cron.schedule('*/15 17-19 * * *', async () => {   
+    
+    logger.info(`Chrome Launched...`); 
+    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    const page = await browser.newPage(); // Create new instance of puppet
+    let today = moment();
+    today = moment("2019-04-02")
+
+    await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
+    page.on('request', (request) => {
+        if(['image', 'stylesheet'].includes(request.resourceType())){
+            request.abort();
+        } else {
+            request.continue();
+        }
+    });
+
+    try {
+        await contractBot(users, page, today.format("MM-DD-YYYY"));
+    } catch(err) {
+        logger.debug(JSON.stringify(err));
+    }
+
+    await page.close();
+    await browser.close();
+    logger.info(`Chrome Closed.`);
+});

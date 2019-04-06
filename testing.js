@@ -14,7 +14,7 @@ logger.info("App running...");
 (async () => {
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
-    const today = moment("2019-04-05")
+    const today = moment("2019-04-02")
 
     await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
     page.on('request', (request) => {
