@@ -16,7 +16,7 @@ cron.schedule('*/15 * * * *', async () => {
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
     let today = moment();
-
+    
     await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
     page.on('request', (request) => {
         if(['image', 'stylesheet'].includes(request.resourceType())){
