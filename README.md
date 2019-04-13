@@ -6,6 +6,13 @@
   
 2) Add your dot.env file to feed the config.js file.
 
+        NODEMAILER_TYPE=oAuth2
+        NODEMAILER_USER=testemail@gmail.com
+        NODEMAILER_CLIENT_ID=spodfjih0897a0pqjouiysuolnjskahbjdvf.apps.googleusercontent.com
+        NODEMAILER_CLIENT_SECRET=kljdfnsbifuk7SAFi56SDhdms
+        NODEMAILER_REFRESH_TOKEN=posidfouhiYii87b6iKASJ8giubdlj
+        NODE_ENV=development
+
 3) Spin up a mongodb server, filled with user data. (Alternatively user.js file in keys folder). Each user should look like this:
 
         {
