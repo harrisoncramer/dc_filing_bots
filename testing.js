@@ -12,9 +12,9 @@ const contractBot = require("./bots/dodContractBot");
 logger.info("App running...");
 
 (async () => {
-    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    const browser = await pupeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
-    const today = moment("2019-04-02")
+    // const today = moment("2019-04-08")
 
     await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
     page.on('request', (request) => {
@@ -27,24 +27,23 @@ logger.info("App running...");
     
     logger.info(`Chrome Launched...`);
     
-    
-    // try {
-    //     await senatorBot(users, page, today.format("YYYY-DD-MM"));
-    // } catch(err) {
-    //     logger.debug(JSON.stringify(err));
-    // }
+    try {
+        await senatorBot(users, page, today.format("YYYY-DD-MM"));
+    } catch(err) {
+        logger.debug(JSON.stringify(err));
+    }
 
-    // try {
-    //     await senateCandidateBot(users, page, today.format("YYYY-DD-MM")); // This sequence matters, because agree statement will not be present...
-    // } catch(err) {
-    //     logger.debug(JSON.stringify(err));
-    // }
+    try {
+        await senateCandidateBot(users, page, today.format("YYYY-DD-MM")); // This sequence matters, because agree statement will not be present...
+    } catch(err) {
+        logger.debug(JSON.stringify(err));
+    }
 
-    // try {
-    //     await faraBot(users, page, today.format("MM-DD-YYYY"));
-    // } catch(err) {
-    //     logger.debug(JSON.stringify(err));
-    // }
+    try {
+        await faraBot(users, page, today.format("MM-DD-YYYY"));
+    } catch(err) {
+        logger.debug(JSON.stringify(err));
+    }
 
     try {
         await contractBot(users, page, today.format("MM-DD-YYYY"));

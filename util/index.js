@@ -1,6 +1,6 @@
 
 const nodemailer = require("nodemailer");
-const { nodemailerConfig } = require("../keys/config");
+const { nodemailerConfig, environment } = require("../keys/config");
 
 var transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -15,18 +15,22 @@ var transporter = nodemailer.createTransport({
   
 
 const mailer = (emails, text, subject) => {
-    const promises = emails.map(email => {
-        let HelperOptions = {
-            from: 'FiDi Bot <hcramer@nationaljournal.com>',
-            to: email,
-            subject,
-            text
-        };
-
-        return transporter.sendMail(HelperOptions);
-    });
-
-    return Promise.all(promises)
+    if(environment !== 'development'){
+        const promises = emails.map(email => {
+            let HelperOptions = {
+                from: 'FiDi Bot <hcramer@nationaljournal.com>',
+                to: email,
+                subject,
+                text
+            };
+    
+            return transporter.sendMail(HelperOptions);
+        });
+    
+        return Promise.all(promises)
+    } else {
+        return Promise.resolve("Development server...")
+    }
 };
 
 const asyncForEach = async(array, callback) => {
