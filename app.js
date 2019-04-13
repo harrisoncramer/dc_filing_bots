@@ -10,7 +10,8 @@ const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
 const contractBot = require("./bots/dodContractBot")
 
-logger.info("App running...");
+const { environment, schedule } = require("./keys/config.js");
+logger.info(`Running bot in ${environment}`);
 
 cron.schedule('*/15 * * * *', async () => {    
     const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
