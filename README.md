@@ -18,6 +18,15 @@
   
         module.exports = users;
 
-  3) Add your dot.env file to feed the config.js file. Must set 
+  3) Add your dot.env file to feed the config.js file.
+  4) Spin up a mongodb server, filled with user data. Each user should look like this:
 
+        {
+        email: "test@testing.com",
+        name: "Matt Tester",
+        senateCandidate: false,
+        senate: false,
+        fara: true
+        }
+        
 I'm running this through PM2, on a Ubuntu 18.02 server on Digital Ocean.
