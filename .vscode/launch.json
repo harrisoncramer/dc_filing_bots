@@ -8,12 +8,6 @@
             "type": "node",
             "request": "launch",
             "name": "Test",
-            "program": "${workspaceFolder}/testing.js"
-        },        
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Bot",
             "program": "${workspaceFolder}/app.js"
         }
     ]

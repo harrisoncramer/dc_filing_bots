@@ -18,6 +18,6 @@
   
         module.exports = users;
 
-  3) Add your dot.env file to feed the config.js file.
+  3) Add your dot.env file to feed the config.js file. Must set 
 
 I'm running this through PM2, on a Ubuntu 18.02 server on Digital Ocean.

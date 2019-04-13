@@ -29,7 +29,7 @@ const mailer = (emails, text, subject) => {
     
         return Promise.all(promises)
     } else {
-        return Promise.resolve("Development server...")
+        return Promise.resolve("Not mailing on dev server...")
     }
 };
 

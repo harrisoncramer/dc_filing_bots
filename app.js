@@ -8,15 +8,16 @@ const users = require("./keys/users");
 const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
-const contractBot = require("./bots/dodContractBot")
 
 const { environment, schedule } = require("./keys/config.js");
-logger.info(`Running bot in ${environment}`);
+const today = environment === "production" ? moment() : moment("04-09-2019");
 
-cron.schedule('*/15 * * * *', async () => {    
-    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+logger.info(`Running bot in ${environment} on ${today.format("MM-DD-YYYY")}`);
+
+const launchBots = async() => {
+    const headless = environment === "production";
+    const browser = await pupeteer.launch({ headless, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
-    let today = moment();
     
     await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
     page.on('request', (request) => {
@@ -50,32 +51,15 @@ cron.schedule('*/15 * * * *', async () => {
     await page.close();
     await browser.close();
     logger.info(`Chrome Closed Bots.`);
+};
 
-});
 
-cron.schedule('*/51 17-20 * * *', async () => {   
-    
-    logger.info(`Chrome Launched DoD-Checker...`); 
-    const browser = await pupeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
-    const page = await browser.newPage(); // Create new instance of puppet
-    let today = moment();
-
-    await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
-    page.on('request', (request) => {
-        if(['image', 'stylesheet'].includes(request.resourceType())){
-            request.abort();
-        } else {
-            request.continue();
-        }
+if(environment === 'production'){
+    cron.schedule(schedule, async () => {   
+        launchBots();
     });
-
-    try {
-        await contractBot(users, page, today.format("MM-DD-YYYY"));
-    } catch(err) {
-        logger.debug(`DoD-Bots __ ${JSON.stringify(err)}`);
-    }
-
-    await page.close();
-    await browser.close();
-    logger.info(`Chrome Closed DoD-Checker.`);
-});
+} else if (environment === 'development') {
+    launchBots();
+} else {
+    logger.debug("Environment variable not set.")
+};
