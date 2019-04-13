@@ -18,18 +18,6 @@
   
         module.exports = users;
 
-  3) Still in the keys folder, add a config.js for your mailer app. This must be configured through gmail's o-auth system:
-
-          const auth = {
-            type: "OAuth2",
-            user: "test@testy.com",
-            clientId: "sdf-sfsdf0-asdfa/sdfassdaaqp7.apps.googleusercontent.com",
-            clientSecret: "os8dj9af7hwafuoip",
-            refreshToken: "af9w7suodhijpaodsfobiuoasipdf"
-          }
-
-          module.exports = {
-            auth
-          }
+  3) Add your dot.env file to feed the config.js file.
 
 I'm running this through PM2, on a Ubuntu 18.02 server on Digital Ocean.
