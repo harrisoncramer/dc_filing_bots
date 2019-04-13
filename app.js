@@ -3,7 +3,8 @@ const pupeteer = require("puppeteer");
 const moment = require("moment");
 
 const logger = require("./logger");
-const users = require("./keys/users");
+// const users = require("./keys/users");
+const { getUsers } = require("./mongodb");
 
 const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
@@ -15,6 +16,8 @@ const today = environment === "production" ? moment() : moment("04-09-2019");
 logger.info(`Running bot in ${environment} on ${today.format("MM-DD-YYYY")}`);
 
 const launchBots = async() => {
+
+    const users = await getUsers();
     const headless = environment === "production";
     const browser = await pupeteer.launch({ headless, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
