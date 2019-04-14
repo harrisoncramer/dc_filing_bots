@@ -69,8 +69,8 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
             if(today === date){
                 let link = `https://efdsearch.senate.gov${datum.link}`;
                 results.push({
-                    first: datum.tds[0],
-                    last: datum.tds[1],
+                    first: datum.tds[0].trim(),
+                    last: datum.tds[1].trim(),
                     link
                 })
             };
