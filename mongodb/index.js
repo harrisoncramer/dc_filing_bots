@@ -1,4 +1,5 @@
 const MongoClient = require("mongodb").MongoClient;
+const moment = require("moment");
 
 // Database url...
 const url = 'mongodb://localhost:27017';
@@ -19,26 +20,30 @@ const getUsers = () => new Promise((resolve,reject) => {
     });
 });
 
-const updateSenators = (data) => new Promise((resolve, reject) => {
-    // console.log(data);
-    client.connect(async(err) => {
-        if(err) reject(err);
-        try {
-            const db = await client.db('bots');
-            const collection = await db.collection('senators');
-            const results = await collection.find({}).toArray();
-            const newData = data.filter(resObj => !results.some(jsonObj => jsonObj.link === resObj.link)); // All new objects that aren't in the old array...
-            if(newData.length > 0){
-                await collection.insertMany(newData);
+const updateDb = (data, whichCollection, fara) => new Promise((resolve, reject) => {
+    if(data.length > 0){
+        client.connect(async(err) => {
+            if(err) reject(err);
+            try {
+                const db = await client.db('bots');
+                const collection = await db.collection(whichCollection);
+                const results = await collection.find({}).toArray();
+                let newData = fara ? data.filter(resObj => !results.some(jsonObj => (jsonObj.registrant === resObj.registrant && (jsonObj.allLinks.some(link => resObj.allLinks.includes(link)) | ((jsonObj.allLinks.length == 0) && (resObj.allLinks.length == 0 )))))) : data.filter(resObj => !results.some(jsonObj => jsonObj.link === resObj.link)) // All new objects that aren't in the old array...
+                if(newData.length > 0){
+                    newData = newData.map(item => ({ ...item, createdAt: new Date().toTimeString()}))
+                    await collection.insertMany(newData);
+                }
+                resolve(newData);
+            } catch(err){
+                reject(err);
             }
-            resolve(newData);
-        } catch(err){
-            reject(err);
-        }
-    })
+        })
+    } else {
+        resolve([]);
+    }
 });
 
 module.exports = {
     getUsers,
-    updateSenators
+    updateDb
 }

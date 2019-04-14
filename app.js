@@ -62,7 +62,7 @@ if(environment === 'production'){
         launchBots();
     });
 } else if (environment === 'development') {
-    launchBots();
+    launchBots().then(() => process.exit())
 } else {
     logger.debug("Environment variable not set.")
 };

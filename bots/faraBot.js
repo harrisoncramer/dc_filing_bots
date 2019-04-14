@@ -5,6 +5,7 @@ let readFile = util.promisify(fs.readFile);
 const cheerio = require("cheerio");
 
 const { mailer, asyncForEach } = require("../util");
+const { updateDb } = require("../mongodb");
 
 const fetchFara = async (url, page) => { 
     try { // Connect to page, get all links...        
@@ -47,16 +48,10 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
     const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
     fetchFara(link, page)
-        .then(async(links) => {
+        .then(async(results) => {
             try {
-                let file = await readFile("./captured/fara.json", { encoding: 'utf8' });
-                let JSONfile = JSON.parse(file); // Old data...
-                let newData = links.filter(resObj => !JSONfile.some(jsonObj => (jsonObj.registrant === resObj.registrant && (jsonObj.allLinks.some(link => resObj.allLinks.includes(link)) | ((jsonObj.allLinks.length == 0) && (resObj.allLinks.length == 0 )))))); // All new objects that aren't in the old array...
-                let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
-                if(newData.length > 0){
-                    fs.writeFileSync("./captured/fara.json", allData, 'utf8'); // Write file...
-                }
-                return newData; // Return new data only...
+                const fara = updateDb(results, "fara", true);
+                return fara;
             } catch(err){
                 throw { message: err.message };
             };

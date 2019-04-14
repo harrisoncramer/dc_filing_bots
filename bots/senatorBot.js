@@ -4,9 +4,8 @@ const logger = require("../logger");
 const fs = require("fs");
 const util = require("util");
 
-const { updateSenators } = require("../mongodb");
-
 const { mailer } = require("../util");
+const { updateDb } = require("../mongodb");
 
 let readFile = util.promisify(fs.readFile);
 
@@ -85,7 +84,7 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
     })
     .then(async(results) => {
         try {
-            const senators = updateSenators(results);
+            const senators = updateDb(results, "senators", false);
             return senators;
         } catch(err){
             throw { message: err.message };

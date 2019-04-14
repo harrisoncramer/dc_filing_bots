@@ -5,6 +5,8 @@ const fs = require("fs");
 const util = require("util");
 
 const { mailer } = require("../util");
+const { updateDb } = require("../mongodb");
+
 
 let readFile = util.promisify(fs.readFile);
 
@@ -78,14 +80,8 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
     })
     .then(async(results) => {
         try {
-            let file = await readFile("./captured/senateCandidates.json", { encoding: 'utf8' });
-            let JSONfile = JSON.parse(file); // Old data...
-            let newData = results.filter(resObj => !JSONfile.some(jsonObj => jsonObj.link === resObj.link)); // All new objects that aren't in the old array...
-            let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
-            if(newData.length > 0){
-                fs.writeFileSync("./captured/senateCandidates.json", allData, 'utf8'); // Write file...
-            }
-            return newData; // Return new data only...
+            const senateCandidates = updateDb(results, "senateCandidates", false);
+            return senateCandidates;
         } catch(err){
             throw { message: err.message };
         };
