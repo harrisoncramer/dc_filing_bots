@@ -22,11 +22,7 @@
         senate: false,
         fara: true
         }
+
+It's important that the mongodb folder have a collection within a 'bots' database for each bot. I'm using 'fara','senators',and 'senateCandidates' as my three collections currently.
         
 I'm running this through PM2, on a Ubuntu 18.02 server on Digital Ocean.
-
-Additional Information:
-
-        Install mongodb w/ Digital Ocean on Ubuntu 18.04
-        Edit /etc/mongodb.conf to point log/db w/in root folder.
-                Navigate to, and change permissions of folder ––> sudo chown -R mongodb:mongodb *
