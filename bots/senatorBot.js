@@ -4,6 +4,8 @@ const logger = require("../logger");
 const fs = require("fs");
 const util = require("util");
 
+const { updateSenators } = require("../mongodb");
+
 const { mailer } = require("../util");
 
 let readFile = util.promisify(fs.readFile);
@@ -72,8 +74,8 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
             if(today === date){
                 let link = `https://efdsearch.senate.gov${datum.link}`;
                 results.push({
-                    first: datum.tds[0],
-                    last: datum.tds[1],
+                    first: datum.tds[0].trim(),
+                    last: datum.tds[1].trim(),
                     link
                 })
             };
@@ -83,14 +85,8 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
     })
     .then(async(results) => {
         try {
-            let file = await readFile("./captured/senators.json", { encoding: 'utf8' });
-            let JSONfile = JSON.parse(file); // Old data...
-            let newData = results.filter(resObj => !JSONfile.some(jsonObj => jsonObj.link === resObj.link)); // All new objects that aren't in the old array...
-            let allData = JSON.stringify(JSONfile.concat(newData)); // Combine the two to rewrite to file...
-            if(newData.length > 0){
-                fs.writeFileSync("./captured/senators.json", allData, 'utf8'); // Write file...
-            }
-            return newData; // Return new data only...
+            const senators = updateSenators(results);
+            return senators;
         } catch(err){
             throw { message: err.message };
         };
