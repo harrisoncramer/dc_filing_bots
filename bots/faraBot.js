@@ -5,7 +5,7 @@ let readFile = util.promisify(fs.readFile);
 const cheerio = require("cheerio");
 
 const { mailer, asyncForEach } = require("../util");
-const { updateDb } = require("../mongodb");
+const { updateDb, getUsers } = require("../mongodb");
 
 const fetchFara = async (url, page) => { 
     try { // Connect to page, get all links...        
@@ -42,7 +42,7 @@ const fetchFara = async (url, page) => {
     }
 };
 
-const bot = (users, page, today) => new Promise((resolve, reject) => {
+const bot = (page, today) => new Promise((resolve, reject) => {
 
     const todayUri = today.replace(/-/g,"\%2F"); // Create uri string...
     const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
@@ -66,7 +66,7 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
                     text = text.concat("\n");
                 });
 
-                let emails = users.filter(user => user.fara).map(({ email }) => email);
+                const emails = await getUsers({ fara: true });        
                 return mailer(emails, text, 'Foreign Lobbyist(s)');
             } else {
                 return Promise.resolve("No updates");

@@ -5,7 +5,7 @@ const fs = require("fs");
 const util = require("util");
 
 const { mailer } = require("../util");
-const { updateDb } = require("../mongodb");
+const { updateDb, getUsers } = require("../mongodb");
 
 
 let readFile = util.promisify(fs.readFile);
@@ -41,7 +41,7 @@ const fetchContracts = async (url, page) => {
     }
 }
 
-const bot = (users, page, today) => new Promise((resolve, reject) => {
+const bot = (page, today) => new Promise((resolve, reject) => {
 
     fetchContracts("https://efdsearch.senate.gov/search/", page)
     .then(async(html) => {
@@ -86,7 +86,7 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
             throw { message: err.message };
         };
     })
-    .then((results) => {
+    .then(async(results) => {
         let text = '–––New filings––– \n';
         if(results.length > 0){
           results.forEach(({ first, last, link}) => {
@@ -94,7 +94,7 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
               text = text.concat(textPlus);
           });
     
-          let emails = users.filter(user => user.senateCandidate).map(({ email }) => email);
+          const emails = await getUsers({ senateCandidates: true })
           return mailer(emails, text, "Senate Candidates");
 
         } else {
