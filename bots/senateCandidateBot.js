@@ -1,14 +1,9 @@
 const cheerio = require("cheerio");
 const moment = require("moment");
 const logger = require("../logger");
-const fs = require("fs");
-const util = require("util");
 
 const { mailer } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
-
-
-let readFile = util.promisify(fs.readFile);
 
 const fetchContracts = async (url, page) => {
 
@@ -43,8 +38,8 @@ const fetchContracts = async (url, page) => {
 
 const bot = (page, today) => new Promise((resolve, reject) => {
 
-    fetchContracts("https://efdsearch.senate.gov/search/", page)
-    .then(async(html) => {
+    fetchContracts("https://efdsearch.senate.gov/search/", page) /// Get html...
+    .then(async(html) => {  /// Parse html w/ cheerio...
         let $ = cheerio.load(html);
 
         let tds = $(".table-striped tr[role='row'] td").map((i, item) => $(item).text()).toArray()
@@ -60,7 +55,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
 
         return data;
     })
-    .then(async(data) => {
+    .then(async(data) => { /// Check if each data is new, formatting...
 
         let results = [];
         data.forEach(datum => {
@@ -78,7 +73,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
 
         return results;
     })
-    .then(async(results) => {
+    .then(async(results) => { /// Update database w/ new data...
         try {
             const senateCandidates = updateDb(results, "senateCandidates", false);
             return senateCandidates;
@@ -86,7 +81,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
             throw { message: err.message };
         };
     })
-    .then(async(results) => {
+    .then(async(results) => { /// Send email of new data...
         let text = '–––New filings––– \n';
         if(results.length > 0){
           results.forEach(({ first, last, link}) => {

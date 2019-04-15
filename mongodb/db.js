@@ -7,23 +7,3 @@ const loadDB = async () => {
 };
 
 module.exports = loadDB;
-
-// const MongoClient = require('mongodb').MongoClient;
-
-// let db;
-
-// const loadDB = async () => {
-//     if (db) {
-//         return db;
-//     }
-//     try {
-//         const client = await MongoClient.connect('mongodb://localhost:27017/');
-//         db = client.db('bots');
-//     } catch (err) {
-//         return Promise.reject(err);
-//     }
-//     return db;
-// };
-
-// module.exports = loadDB;
-

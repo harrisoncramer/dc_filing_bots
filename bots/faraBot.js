@@ -1,6 +1,4 @@
 const logger = require("../logger");
-const fs = require("fs");
-const util = require("util");
 const cheerio = require("cheerio");
 
 const { mailer, asyncForEach } = require("../util");

@@ -1,8 +1,6 @@
 const cheerio = require("cheerio");
 const moment = require("moment");
 const logger = require("../logger");
-const fs = require("fs");
-const util = require("util");
 
 const { mailer } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
