@@ -23,7 +23,20 @@ const updateDb = (data, whichCollection, fara) => new Promise(async(resolve, rej
         try {
         const collection = await db.collection(whichCollection);
         const results = await collection.find({}).toArray();
-        let newData = fara ? data.filter(resObj => !results.some(jsonObj => (jsonObj.registrant === resObj.registrant && (jsonObj.allLinks.some(link => resObj.allLinks.includes(link)) | ((jsonObj.allLinks.length == 0) && (resObj.allLinks.length == 0 )))))) : data.filter(resObj => !results.some(jsonObj => jsonObj.link === resObj.link)) // All new objects that aren't in the old array...
+
+        let newData;
+        switch(whichCollection){
+            case 'senators':
+            case 'senateCandidates':
+                newData = data.filter(resObj => !results.some(jsonObj => jsonObj.link === resObj.link));
+                break;
+            case 'fara':
+                newData = data.filter(resObj => !results.some(jsonObj => (jsonObj.registrant === resObj.registrant && (jsonObj.allLinks.some(link => resObj.allLinks.includes(link)) | ((jsonObj.allLinks.length == 0) && (resObj.allLinks.length == 0 ))))));
+                break;
+            default:
+                newData = [];            
+        };
+
         if(newData.length > 0){
             newData = newData.map(item => ({ ...item, createdAt: new Date().toTimeString()}))
             await collection.insertMany(newData);
