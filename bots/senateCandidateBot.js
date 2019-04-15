@@ -75,7 +75,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
     })
     .then(async(results) => { /// Update database w/ new data...
         try {
-            const senateCandidates = updateDb(results, "senateCandidates", false);
+            const senateCandidates = updateDb(results, "senateCandidates");
             return senateCandidates;
         } catch(err){
             throw { message: err.message };

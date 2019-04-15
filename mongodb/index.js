@@ -15,7 +15,7 @@ const getUsers = (search) => new Promise(async(resolve,reject) => {
 
 });
 
-const updateDb = (data, whichCollection, fara) => new Promise(async(resolve, reject) => {
+const updateDb = (data, whichCollection) => new Promise(async(resolve, reject) => {
 
     const { db, client } = await loadDB();
 

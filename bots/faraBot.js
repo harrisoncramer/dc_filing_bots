@@ -47,7 +47,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
     fetchFara(link, page)
         .then(async(results) => {
             try {
-                const fara = updateDb(results, "fara", true);
+                const fara = updateDb(results, "fara");
                 return fara;
             } catch(err){
                 throw { message: err.message };

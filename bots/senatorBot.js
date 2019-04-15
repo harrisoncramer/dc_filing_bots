@@ -80,7 +80,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
     })
     .then(async(results) => {
         try {
-            const senators = updateDb(results, "senators", false);
+            const senators = updateDb(results, "senators");
             return senators;
         } catch(err){
             throw { message: err.message };
