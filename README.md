@@ -4,7 +4,8 @@
 
 2) Once you are able to login to the non-root user, you'll  need to install a few global dependencies like `pm2` & `yarn`. Then set up your `bots` database in the mongo shell, and import the JSON** of your users:
          
-         > mongoimport --db bots --collection collectionName users.json
+         > mongoimport --db bots --collection collectionName users.json --jsonArray
+
 
 3) Back in the linux shell, install dependencies for Chromium:
          
