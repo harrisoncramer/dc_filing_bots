@@ -45,14 +45,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
     const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
     fetchFara(link, page)
-        .then(async(results) => {
-            try {
-                const fara = updateDb(results, "fara");
-                return fara;
-            } catch(err){
-                throw { message: err.message };
-            };
-        })
+        .then(async(results) => updateDb(results, "fara"))
         .then(async(res) => {
 
             let text = '–––New filings––– \n';

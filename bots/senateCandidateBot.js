@@ -73,14 +73,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
 
         return results;
     })
-    .then(async(results) => { /// Update database w/ new data...
-        try {
-            const senateCandidates = updateDb(results, "senateCandidates");
-            return senateCandidates;
-        } catch(err){
-            throw { message: err.message };
-        };
-    })
+    .then(async(results) => updateDb(results, "senateCandidates")) /// Update database w/ new data...
     .then(async(results) => { /// Send email of new data...
         let text = '–––New filings––– \n';
         if(results.length > 0){

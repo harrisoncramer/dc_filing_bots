@@ -78,14 +78,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
 
         return results;
     })
-    .then(async(results) => {
-        try {
-            const senators = updateDb(results, "senators");
-            return senators;
-        } catch(err){
-            throw { message: err.message };
-        };
-    })
+    .then((results) => updateDb(results, "senators"))
     .then(async(results) => {
         let text = '–––New filings––– \n';
         if(results.length > 0){
