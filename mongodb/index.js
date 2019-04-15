@@ -5,12 +5,12 @@ const getUsers = (search) => new Promise(async(resolve,reject) => {
     const { db, client } = await loadDB();
     
     const collection = await db.collection('users');
-    let results = await collection.find(search).project({ email: 1, _id: 0 }).toArray()
+    let results = await collection.find(search).project({ email: 1, _id: 0 }).toArray()  // Get users w/ this search...
     results = results.map(({ email }) => email);
 
     client.close((err) => {
         if(err) reject(err);
-        resolve(results);
+        resolve(results); // Close the connection and return email list...
     });
 
 });
@@ -24,6 +24,7 @@ const updateDb = (data, whichCollection, fara) => new Promise(async(resolve, rej
         const collection = await db.collection(whichCollection);
         const results = await collection.find({}).toArray();
 
+        /// Determining any of the scraped data is new....
         let newData;
         switch(whichCollection){
             case 'senators':
@@ -37,13 +38,13 @@ const updateDb = (data, whichCollection, fara) => new Promise(async(resolve, rej
                 newData = [];            
         };
 
-        if(newData.length > 0){
+        if(newData.length > 0){ // If new, create new time stamp, and add to database...
             newData = newData.map(item => ({ ...item, createdAt: new Date().toTimeString()}))
             await collection.insertMany(newData);
         }
         client.close((err) => {
             if(err) reject(err);
-            resolve(newData);
+            resolve(newData); // Close the connection and return the newData list...
         });
         } catch(err){
             reject(err);
