@@ -22,7 +22,8 @@
         senate: false,
         fara: true
         }
-
-It's important that the mongodb folder have a collection within a 'bots' database for each bot. I'm using 'fara','senators',and 'senateCandidates' as my three collections currently.
         
-I'm running this through PM2, on a Ubuntu 18.02 server on Digital Ocean.
+4) I'm running this through PM2, on a Ubuntu 16.04 server on Digital Ocean. For useful configuration of the user authentication w/ local key (and to allow Digital Ocean user access from the console, change the PasswordAuthentication from "no" to "yes" in the `ssh_config` file, like this:
+
+         sudo nano /etc/ssh/sshd_config
+         PasswordAuthentication yes
