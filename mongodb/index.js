@@ -1,18 +1,14 @@
 const loadDB = require('./db');
 
 const getUsers = (search) => new Promise(async(resolve,reject) => {
-  
-    const db = await loadDB();
-
-    try {
+    
+    const { db, client } = await loadDB();
+    
     const collection = await db.collection('users');
     let results = await collection.find(search).project({ email: 1, _id: 0 }).toArray()
     results = results.map(({ email }) => email);
-    } catch(err){
-        reject(err);
-    }
 
-    db.close((err) => {
+    client.close((err) => {
         if(err) reject(err);
         resolve(results);
     });
@@ -20,10 +16,10 @@ const getUsers = (search) => new Promise(async(resolve,reject) => {
 });
 
 const updateDb = (data, whichCollection, fara) => new Promise(async(resolve, reject) => {
+
+    const { db, client } = await loadDB();
+
     if(data.length > 0){
-
-        const db = await loadDB();
-
         try {
         const collection = await db.collection(whichCollection);
         const results = await collection.find({}).toArray();
@@ -32,7 +28,10 @@ const updateDb = (data, whichCollection, fara) => new Promise(async(resolve, rej
             newData = newData.map(item => ({ ...item, createdAt: new Date().toTimeString()}))
             await collection.insertMany(newData);
         }
-        resolve(newData);
+        client.close((err) => {
+            if(err) reject(err);
+            resolve(newData);
+        });
         } catch(err){
             reject(err);
         }
