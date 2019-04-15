@@ -29,7 +29,7 @@ const fetchContracts = async (url, page) => {
 
         await page.waitFor(1000)
         
-        let html = await page.content();
+        const html = await page.content();
         return html;
     } catch(err){
         throw { message: err.message };
@@ -40,12 +40,12 @@ const bot = (page, today) => new Promise((resolve, reject) => {
 
     fetchContracts("https://efdsearch.senate.gov/search/", page) /// Get html...
     .then(async(html) => {  /// Parse html w/ cheerio...
-        let $ = cheerio.load(html);
+        const $ = cheerio.load(html);
 
-        let tds = $(".table-striped tr[role='row'] td").map((i, item) => $(item).text()).toArray()
-        let links = $('tbody tr a').map((i, link) => $(link).attr("href")).toArray()
+        const tds = $(".table-striped tr[role='row'] td").map((i, item) => $(item).text()).toArray()
+        const links = $('tbody tr a').map((i, link) => $(link).attr("href")).toArray()
 
-        let data = links.map((link, x) => {
+        const data = links.map((link, x) => {
             let result = { link, tds: [] };
             for(let i = 0; i < 5; i++){
                result.tds.push(tds[i + (x * 5)]);
@@ -59,10 +59,10 @@ const bot = (page, today) => new Promise((resolve, reject) => {
 
         let results = [];
         data.forEach(datum => {
-            let no_format_date = new Date(datum.tds[4]).toUTCString();
-            let date = moment(no_format_date).format("YYYY-DD-MM");
+            const no_format_date = new Date(datum.tds[4]).toUTCString();
+            const date = moment(no_format_date).format("YYYY-DD-MM");
             if(today === date){
-                let link = `https://efdsearch.senate.gov${datum.link}`;
+                const link = `https://efdsearch.senate.gov${datum.link}`;
                 results.push({
                     first: datum.tds[0].trim(),
                     last: datum.tds[1].trim(),
@@ -78,7 +78,7 @@ const bot = (page, today) => new Promise((resolve, reject) => {
         let text = '–––New filings––– \n';
         if(results.length > 0){
           results.forEach(({ first, last, link}) => {
-              let textPlus = `${first} ${last}: ${link}\n`;
+              const textPlus = `${first} ${last}: ${link}\n`;
               text = text.concat(textPlus);
           });
     

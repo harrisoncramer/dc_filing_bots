@@ -11,11 +11,11 @@ const fetchFara = async (url, page) => {
         const html = await page.evaluate(body => body.innerHTML, tableHandle);
         await tableHandle.dispose();
 
-        let $ = cheerio.load(html);
+        const $ = cheerio.load(html);
+        const names = $("td[headers='NAME']").map((i,td) => $(td).text()).toArray();
         let links = $('td a:first-child').map((i, link) => $(link).attr("href")).toArray();
-        let names = $("td[headers='NAME']").map((i,td) => $(td).text()).toArray();
-
         links = links.map((link, i) => ({ url: `https://efile.fara.gov/pls/apex/${link}`, registrant: names[i] }));
+        
         const getLinks = async ({ url, registrant }) => {
             
             await page.goto(url, { waitUntil: 'networkidle2' }); // Navigate to each page...
@@ -24,8 +24,8 @@ const fetchFara = async (url, page) => {
             const html = await page.evaluate(body => body.innerHTML, bodyHandle);
             await bodyHandle.dispose();
 
-            let $ = cheerio.load(html);
-            let allLinks = $('a').map((i, link) => $(link).attr("href")).toArray();
+            const $$ = cheerio.load(html);
+            const allLinks = $$('a').map((i, link) => $(link).attr("href")).toArray();
 
             return { allLinks, registrant };
         };
