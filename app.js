@@ -33,19 +33,19 @@ const launchBots = async() => {
     try {
         await senatorBot(page, today.format("YYYY-DD-MM"));
     } catch(err) {
-        logger.debug(JSON.stringify(err));
+        logger.debug(`SenatorBot –– ${JSON.stringify(err)}`);
     }
 
     try {
         await senateCandidateBot(page, today.format("YYYY-DD-MM")); // This sequence matters, because agree statement will not be present...
     } catch(err) {
-        logger.debug(JSON.stringify(err));
+        logger.debug(`SenateCandidateBot –– ${JSON.stringify(err)}`);
     }
 
     try {
         await faraBot(page, today.format("MM-DD-YYYY"));
     } catch(err) {
-        logger.debug(`Bots –– ${JSON.stringify(err)}`);
+        logger.debug(`FaraBot –– ${JSON.stringify(err)}`);
     }
 
     await page.close();
