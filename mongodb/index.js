@@ -1,6 +1,7 @@
 const loadDB = require('./db');
+const logger = require("../logger");
 
-const getUsers = (search) => new Promise(async(resolve,reject) => {
+const getUsers = async (search) => {
     
     const { db, client } = await loadDB();
     
@@ -8,19 +9,16 @@ const getUsers = (search) => new Promise(async(resolve,reject) => {
     let results = await collection.find(search).project({ email: 1, _id: 0 }).toArray()  // Get users w/ this search...
     results = results.map(({ email }) => email);
 
-    client.close((err) => {
-        if(err) reject(err);
-        resolve(results); // Close the connection and return email list...
-    });
+    const closing = client.close();
+    return closing.then(() => results);
 
-});
+};
 
-const updateDb = (data, whichCollection) => new Promise(async(resolve, reject) => {
+const updateDb = async (data, whichCollection) => {
 
     const { db, client } = await loadDB();
 
     if(data.length > 0){
-        try {
         const collection = await db.collection(whichCollection);
         const results = await collection.find({}).toArray();
 
@@ -40,19 +38,15 @@ const updateDb = (data, whichCollection) => new Promise(async(resolve, reject) =
 
         if(newData.length > 0){ // If new, create new time stamp, and add to database...
             newData = newData.map(item => ({ ...item, createdAt: new Date().toTimeString()}))
-            await collection.insertMany(newData);
+            await collection.insertMany(newData).then((res) => logger.info(`${whichCollection} - ${newData.length} documents inserted!`));
         }
-        client.close((err) => {
-            if(err) reject(err);
-            resolve(newData); // Close the connection and return the newData list...
-        });
-        } catch(err){
-            reject(err);
-        }
+        
+        const closing = client.close();
+        return closing.then(() => newData);
     } else {
-        resolve([]);
+        return [];
     }
-});
+};
 
 module.exports = {
     getUsers,

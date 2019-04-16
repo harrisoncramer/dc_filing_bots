@@ -7,7 +7,6 @@ const { updateDb, getUsers } = require("../mongodb");
 
 const fetchContracts = async (url, page) => {
     
-    try {
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
         await Promise.all([
             page.click("#agree_statement"),
@@ -34,16 +33,12 @@ const fetchContracts = async (url, page) => {
         await page.waitFor(1000)
 
         let html = await page.content();
-        
         return html;
-    } catch(err){
-        throw { message: err.message };
-    }
 }
 
-const bot = (page, today) => new Promise((resolve, reject) => {
+const bot = async (page, today) => {
 
-    fetchContracts("https://efdsearch.senate.gov/search/", page)
+    return fetchContracts("https://efdsearch.senate.gov/search/", page)
     .then(async(html) => {
         const $ = cheerio.load(html);
 
@@ -95,12 +90,8 @@ const bot = (page, today) => new Promise((resolve, reject) => {
         }
     })
     .then((res) => {
-        logger.info(`Senator Check –– ${JSON.stringify(res)}`);
-        resolve();
-    })
-    .catch(err => {
-        reject(err);
+        logger.info(`senators - ${res}`);
     });
-});
+};
 
 module.exports = bot;

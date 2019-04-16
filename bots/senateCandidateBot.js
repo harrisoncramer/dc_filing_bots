@@ -7,7 +7,6 @@ const { updateDb, getUsers } = require("../mongodb");
 
 const fetchContracts = async (url, page) => {
 
-    try {
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).
 
         await page.click('.form-check-input.candidate_filer');
@@ -31,14 +30,12 @@ const fetchContracts = async (url, page) => {
         
         const html = await page.content();
         return html;
-    } catch(err){
-        throw { message: err.message };
-    }
+
 }
 
-const bot = (page, today) => new Promise((resolve, reject) => {
+const bot = (page, today) => {
 
-    fetchContracts("https://efdsearch.senate.gov/search/", page) /// Get html...
+    return fetchContracts("https://efdsearch.senate.gov/search/", page) /// Get html...
     .then(async(html) => {  /// Parse html w/ cheerio...
         const $ = cheerio.load(html);
 
@@ -90,12 +87,8 @@ const bot = (page, today) => new Promise((resolve, reject) => {
         }
     })
     .then((res) => {
-        logger.info(`Senate Candidate Check –– ${JSON.stringify(res)}`);
-        resolve();
-    })
-    .catch(err => {
-        reject(err);
+        logger.info(`senateCandidates - ${res}`);
     });
-});
+};
 
 module.exports = bot;

@@ -1,4 +1,4 @@
-const { createLogger, format, transports } = require('winston');
+const winston  = require('winston');
 const fs = require('fs');
 const path = require('path');
 const { environment } = require("./keys/config");
@@ -11,27 +11,23 @@ if (!fs.existsSync(logDir)) {
 
 const filename = environment === "production" ? path.join(logDir, 'results.log') : path.join(logDir, 'results-test.log');
 
-const logger = createLogger({
-  // change level if in dev environment versus production
-  level: 'debug',
-  format: format.combine(
-    format.timestamp({
-      format: 'MM-DD-YYYY HH:mm:ss'
+const logger = winston.createLogger({
+	transports: [
+		new (winston.transports.Console)({
+			// silent: !!process.env.TEST_ENV,
+			level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+			format: winston.format.combine(
+				winston.format.timestamp(),
+				winston.format.printf(info => {
+
+					const message = info[Symbol.for('splat')] ? info.message + ' - ' + info[Symbol.for('splat')][0] : info.message;
+
+					return `[${info.timestamp}][PID=${process.pid}][${winston.format.colorize(info.level, info.level.toUpperCase())}]: ${message}`;
+				})
+			)
     }),
-    format.printf(info => `${info.level} @ ${info.timestamp} –– ${info.message}`)
-  ),
-  transports: [
-    new transports.Console({
-      level: 'debug',
-      format: format.combine(
-        format.colorize(),
-        format.printf(
-          info => `${info.level} @ ${info.timestamp} –– ${info.message}`
-        )
-      )
-    }),
-    new transports.File({ filename })
-  ]
+    new winston.transports.File({ filename })
+	]
 });
 
 module.exports = logger;
