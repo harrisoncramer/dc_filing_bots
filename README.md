@@ -1,5 +1,3 @@
-**There's a few things you need to set up.**
-
 1) I'm running this through PM2, on a Ubuntu 16.04 server on Digital Ocean. Create a non-root user w/ root privileges. If adding a password for non-root user, make sure to edit your `/etc/ssh/sshd_conf` file to `PasswordAuthentication yes`.
 
 2) Once you are able to login to the non-root user, you'll  need to install a few global dependencies like `pm2` & `yarn`. Then set up your `bots` database in the mongo shell, and import the JSON** of your users:
