@@ -1,0 +1,8 @@
+node_modules
+Contracts
+results.log
+testing.js
+users.js
+.env
+.vscode
+.DS_Store
