@@ -5,7 +5,6 @@ const { mailer, asyncForEach } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
 
 const fetchFara = async (url, page) => { 
-    try { // Connect to page, get all links...        
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
         const tableHandle = await page.$("div[id='apexir_DATA_PANEL'] tbody"); // page.$("div[id='apexir_DATA_PANEL'] tbody tr[class='even']");
         const html = await page.evaluate(body => body.innerHTML, tableHandle);
@@ -18,7 +17,7 @@ const fetchFara = async (url, page) => {
         
         const getLinks = async ({ url, registrant }) => {
             
-            await page.goto(url, { waitUntil: 'networkidle2' }); // Navigate to each page...
+            await page.goto(url, { waitUntil: 'networkidle2', timeout: 10000 }); // Navigate to each page...
 
             const bodyHandle = await page.$("body div[id='apexir_DATA_PANEL'] tbody"); // page.$("div[id='apexir_DATA_PANEL'] tbody tr[class='even']");
             const html = await page.evaluate(body => body.innerHTML, bodyHandle);
@@ -30,24 +29,18 @@ const fetchFara = async (url, page) => {
             return { allLinks, registrant };
         };
 
-        const promises = await asyncForEach(links, ({ url, registrant }) => getLinks({ url, registrant }));
-        return promises;
-
-    }
-    catch(err){
-        throw { message: err.message };
-    }
+        const results = await asyncForEach(links, getLinks);
+        return results;
 };
 
-const bot = (page, today) => new Promise((resolve, reject) => {
+const bot = async (page, today) => {
 
     const todayUri = today.replace(/-/g,"\%2F"); // Create uri string...
     const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
-    fetchFara(link, page)
+    return fetchFara(link, page)
         .then(async(results) => updateDb(results, "fara"))
         .then(async(res) => {
-
             let text = '–––New filings––– \n';
             if(res.length > 0){
                 res.forEach(({ registrant, allLinks }) => {
@@ -63,12 +56,8 @@ const bot = (page, today) => new Promise((resolve, reject) => {
             }
         })
         .then((res) => {
-            logger.info(`FARA Check –– ${JSON.stringify(res)}`);
-            resolve();
-        })
-        .catch(err => {
-            reject(err);
+            logger.info(`fara - ${res}`);
         });
-});
+};
 
 module.exports = bot;
