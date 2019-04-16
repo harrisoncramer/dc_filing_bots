@@ -1,14 +1,9 @@
 const cheerio = require("cheerio");
 const moment = require("moment");
 const logger = require("../logger");
-const fs = require("fs");
-const util = require("util");
 
 const { mailer } = require("../util");
-const { updateDb } = require("../mongodb");
-
-
-let readFile = util.promisify(fs.readFile);
+const { updateDb, getUsers } = require("../mongodb");
 
 const fetchContracts = async (url, page) => {
 
@@ -34,23 +29,23 @@ const fetchContracts = async (url, page) => {
 
         await page.waitFor(1000)
         
-        let html = await page.content();
+        const html = await page.content();
         return html;
     } catch(err){
         throw { message: err.message };
     }
 }
 
-const bot = (users, page, today) => new Promise((resolve, reject) => {
+const bot = (page, today) => new Promise((resolve, reject) => {
 
-    fetchContracts("https://efdsearch.senate.gov/search/", page)
-    .then(async(html) => {
-        let $ = cheerio.load(html);
+    fetchContracts("https://efdsearch.senate.gov/search/", page) /// Get html...
+    .then(async(html) => {  /// Parse html w/ cheerio...
+        const $ = cheerio.load(html);
 
-        let tds = $(".table-striped tr[role='row'] td").map((i, item) => $(item).text()).toArray()
-        let links = $('tbody tr a').map((i, link) => $(link).attr("href")).toArray()
+        const tds = $(".table-striped tr[role='row'] td").map((i, item) => $(item).text()).toArray()
+        const links = $('tbody tr a').map((i, link) => $(link).attr("href")).toArray()
 
-        let data = links.map((link, x) => {
+        const data = links.map((link, x) => {
             let result = { link, tds: [] };
             for(let i = 0; i < 5; i++){
                result.tds.push(tds[i + (x * 5)]);
@@ -60,14 +55,14 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
 
         return data;
     })
-    .then(async(data) => {
+    .then(async(data) => { /// Check if each data is new, formatting...
 
         let results = [];
         data.forEach(datum => {
-            let no_format_date = new Date(datum.tds[4]).toUTCString();
-            let date = moment(no_format_date).format("YYYY-DD-MM");
+            const no_format_date = new Date(datum.tds[4]).toUTCString();
+            const date = moment(no_format_date).format("YYYY-DD-MM");
             if(today === date){
-                let link = `https://efdsearch.senate.gov${datum.link}`;
+                const link = `https://efdsearch.senate.gov${datum.link}`;
                 results.push({
                     first: datum.tds[0].trim(),
                     last: datum.tds[1].trim(),
@@ -78,23 +73,16 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
 
         return results;
     })
-    .then(async(results) => {
-        try {
-            const senateCandidates = updateDb(results, "senateCandidates", false);
-            return senateCandidates;
-        } catch(err){
-            throw { message: err.message };
-        };
-    })
-    .then((results) => {
+    .then(async(results) => updateDb(results, "senateCandidates")) /// Update database w/ new data...
+    .then(async(results) => { /// Send email of new data...
         let text = '–––New filings––– \n';
         if(results.length > 0){
           results.forEach(({ first, last, link}) => {
-              let textPlus = `${first} ${last}: ${link}\n`;
+              const textPlus = `${first} ${last}: ${link}\n`;
               text = text.concat(textPlus);
           });
     
-          let emails = users.filter(user => user.senateCandidate).map(({ email }) => email);
+          const emails = await getUsers({ senateCandidates: true })
           return mailer(emails, text, "Senate Candidates");
 
         } else {

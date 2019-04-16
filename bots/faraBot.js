@@ -1,11 +1,8 @@
 const logger = require("../logger");
-const fs = require("fs");
-const util = require("util");
-let readFile = util.promisify(fs.readFile);
 const cheerio = require("cheerio");
 
 const { mailer, asyncForEach } = require("../util");
-const { updateDb } = require("../mongodb");
+const { updateDb, getUsers } = require("../mongodb");
 
 const fetchFara = async (url, page) => { 
     try { // Connect to page, get all links...        
@@ -14,11 +11,11 @@ const fetchFara = async (url, page) => {
         const html = await page.evaluate(body => body.innerHTML, tableHandle);
         await tableHandle.dispose();
 
-        let $ = cheerio.load(html);
+        const $ = cheerio.load(html);
+        const names = $("td[headers='NAME']").map((i,td) => $(td).text()).toArray();
         let links = $('td a:first-child').map((i, link) => $(link).attr("href")).toArray();
-        let names = $("td[headers='NAME']").map((i,td) => $(td).text()).toArray();
-
         links = links.map((link, i) => ({ url: `https://efile.fara.gov/pls/apex/${link}`, registrant: names[i] }));
+        
         const getLinks = async ({ url, registrant }) => {
             
             await page.goto(url, { waitUntil: 'networkidle2' }); // Navigate to each page...
@@ -27,8 +24,8 @@ const fetchFara = async (url, page) => {
             const html = await page.evaluate(body => body.innerHTML, bodyHandle);
             await bodyHandle.dispose();
 
-            let $ = cheerio.load(html);
-            let allLinks = $('a').map((i, link) => $(link).attr("href")).toArray();
+            const $$ = cheerio.load(html);
+            const allLinks = $$('a').map((i, link) => $(link).attr("href")).toArray();
 
             return { allLinks, registrant };
         };
@@ -42,20 +39,13 @@ const fetchFara = async (url, page) => {
     }
 };
 
-const bot = (users, page, today) => new Promise((resolve, reject) => {
+const bot = (page, today) => new Promise((resolve, reject) => {
 
     const todayUri = today.replace(/-/g,"\%2F"); // Create uri string...
     const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
     fetchFara(link, page)
-        .then(async(results) => {
-            try {
-                const fara = updateDb(results, "fara", true);
-                return fara;
-            } catch(err){
-                throw { message: err.message };
-            };
-        })
+        .then(async(results) => updateDb(results, "fara"))
         .then(async(res) => {
 
             let text = '–––New filings––– \n';
@@ -66,7 +56,7 @@ const bot = (users, page, today) => new Promise((resolve, reject) => {
                     text = text.concat("\n");
                 });
 
-                let emails = users.filter(user => user.fara).map(({ email }) => email);
+                const emails = await getUsers({ fara: true });        
                 return mailer(emails, text, 'Foreign Lobbyist(s)');
             } else {
                 return Promise.resolve("No updates");
