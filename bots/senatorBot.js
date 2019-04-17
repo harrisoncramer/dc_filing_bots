@@ -81,7 +81,7 @@ const bot = async (page, today) => {
               text = text.concat(textPlus);
           });
 
-        const emails = await getUsers({ senator: true });
+        const emails = await getUsers({ senators: true });
         return mailer(emails, text, 'Senate Disclosure(s)').then((res) => {
             res = res.length > 0 ? res : 'senators - nobody to email!';
             return res;
