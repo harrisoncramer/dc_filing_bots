@@ -18,11 +18,12 @@ const logger = winston.createLogger({
 			level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
 			format: winston.format.combine(
 				winston.format.timestamp(),
+				winston.format.colorize(),
 				winston.format.printf(info => {
 
 					const message = info[Symbol.for('splat')] ? info.message + ' - ' + info[Symbol.for('splat')][0] : info.message;
 
-					return `[${info.timestamp}][PID=${process.pid}][${winston.format.colorize(info.level, info.level.toUpperCase())}]: ${message}`;
+					return `[${info.timestamp}][PID=${process.pid}][${info.level}]: ${message}`;
 				})
 			)
     }),
