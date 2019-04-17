@@ -9,12 +9,13 @@ const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
 
 const { environment, schedule } = require("./keys/config.js");
-const today = environment === "production" ? moment() : moment("04-09-2019");
+let today = environment === "production" ? moment() : moment("04-09-2019");
 
 logger.info(`Starting up program in ${environment} on ${today.format("MM-DD-YYYY")}`);
 
 const launchBots = async() => {
 
+    today = environment === "production" ? moment() : moment("04-09-2019");
     const headless = environment === "production";
     const browser = await pupeteer.launch({ headless, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
