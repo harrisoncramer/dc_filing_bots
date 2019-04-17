@@ -15,22 +15,21 @@ var transporter = nodemailer.createTransport({
   
 
 const mailer = (emails, text, subject) => {
-    if(environment !== 'development'){
-        const promises = emails.map(email => {
-            let HelperOptions = {
-                from: 'FiDi Bot <hcramer@nationaljournal.com>',
-                to: email,
-                subject,
-                text
-            };
+    if(environment === 'development')
+        return Promise.resolve("Not mailing in dev server...")
     
-            return transporter.sendMail(HelperOptions);
-        });
+    const promises = emails.map(email => {
+        let HelperOptions = {
+            from: 'FiDi Bot <hcramer@nationaljournal.com>',
+            to: email,
+            subject,
+            text
+        };
+        return transporter.sendMail(HelperOptions);
+    });
     
-        return Promise.all(promises)
-    } else {
-        return Promise.resolve("Not mailing on dev server...")
-    }
+    return Promise.all(promises);
+    
 };
 
 const asyncForEach = async(array, callback) => {

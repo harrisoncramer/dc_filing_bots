@@ -33,19 +33,19 @@ const launchBots = async() => {
     });
         
     try {
-        await senatorBot(page, today.format("YYYY-DD-MM"));
+        await senatorBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
     } catch(err) {
         logger.error(`SenatorBot Error - `, err);
     }
 
     try {
-        await senateCandidateBot(page, today.format("YYYY-DD-MM")); // This sequence matters, because agree statement will not be present...
+        await senateCandidateBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res)); // This sequence matters, because agree statement will not be present...
     } catch(err) {
         logger.error(`SenateCandidate Bot Error - `, err);
     }
 
     try {
-        await faraBot(page, today.format("MM-DD-YYYY"));
+        await faraBot(page, today.format("MM-DD-YYYY")).then(res => logger.info(res));
     } catch(err) {
         logger.error(`Fara Bot Error - `, err);
     }

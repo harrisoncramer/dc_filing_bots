@@ -1,6 +1,5 @@
 const cheerio = require("cheerio");
 const moment = require("moment");
-const logger = require("../logger");
 
 const { mailer } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
@@ -74,20 +73,19 @@ const bot = (page, today) => {
     .then(async(results) => { /// Send email of new data...
         let text = '–––New filings––– \n';
         if(results.length > 0){
-          results.forEach(({ first, last, link}) => {
-              const textPlus = `${first} ${last}: ${link}\n`;
-              text = text.concat(textPlus);
-          });
-    
-          const emails = await getUsers({ senateCandidates: true })
-          return mailer(emails, text, "Senate Candidates");
+            results.forEach(({ first, last, link}) => {
+                const textPlus = `${first} ${last}: ${link}\n`;
+                text = text.concat(textPlus);
+            });
 
+            const emails = await getUsers({ senateCandidates: true })
+            return mailer(emails, text, 'Senate Candidate Disclosure(s)').then((res) => {
+                res = res.length > 0 ? res : 'senateCandidates - nobody to email!';
+                return res;
+            });
         } else {
-            return Promise.resolve("No updates");
+            return "senateCandidates - no updates";
         }
-    })
-    .then((res) => {
-        logger.info(`senateCandidates - ${res}`);
     });
 };
 

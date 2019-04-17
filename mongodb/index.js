@@ -38,7 +38,7 @@ const updateDb = async (data, whichCollection) => {
 
         if(newData.length > 0){ // If new, create new time stamp, and add to database...
             newData = newData.map(item => ({ ...item, createdAt: new Date().toTimeString()}))
-            await collection.insertMany(newData).then((res) => logger.info(`${whichCollection} - ${newData.length} documents inserted!`));
+            await collection.insertMany(newData).then(() => logger.info(`${whichCollection} - ${newData.length} documents inserted!`));
         }
         
         const closing = client.close();

@@ -1,4 +1,3 @@
-const logger = require("../logger");
 const cheerio = require("cheerio");
 
 const { mailer, asyncForEach } = require("../util");
@@ -50,13 +49,13 @@ const bot = async (page, today) => {
                 });
 
                 const emails = await getUsers({ fara: true });        
-                return mailer(emails, text, 'Foreign Lobbyist(s)');
+                return mailer(emails, text, 'Foreign Lobbyist(s)').then((res) => {
+                    res = res.length > 0 ? res : 'fara - nobody to email!';
+                    return res;
+                });
             } else {
-                return Promise.resolve("No updates");
+                return 'fara - no updates';
             }
-        })
-        .then((res) => {
-            logger.info(`fara - ${res}`);
         });
 };
 

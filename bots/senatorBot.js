@@ -1,6 +1,5 @@
 const cheerio = require("cheerio");
 const moment = require("moment");
-const logger = require("../logger");
 
 const { mailer } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
@@ -83,14 +82,13 @@ const bot = async (page, today) => {
           });
 
         const emails = await getUsers({ senator: true });
-        return mailer(emails, text, 'Senate Disclosure');
-
-        } else {
-            return Promise.resolve("No updates");
+        return mailer(emails, text, 'Senate Disclosure(s)').then((res) => {
+            res = res.length > 0 ? res : 'senators - nobody to email!';
+            return res;
+        });
+    } else {
+            return "senators - no updates";
         }
-    })
-    .then((res) => {
-        logger.info(`senators - ${res}`);
     });
 };
 
