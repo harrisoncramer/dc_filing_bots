@@ -13,7 +13,7 @@ const Fara = mongoose.model('Fara', {
         type: String,
         require: true,
     }
-});
+},'fara');
 
 const SenateCandidate = mongoose.model('SenateCandidate', {
     first: {
@@ -32,7 +32,7 @@ const SenateCandidate = mongoose.model('SenateCandidate', {
         type: String,
         require: true,
     }
-});
+}, 'senateCandidates');
 
 const Senator = mongoose.model('Senator', {
     first: {
@@ -51,7 +51,7 @@ const Senator = mongoose.model('Senator', {
         type: String,
         require: true,
     }
-});
+}, 'senators' );
 
 module.exports = {
     Fara,
