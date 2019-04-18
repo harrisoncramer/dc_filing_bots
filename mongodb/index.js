@@ -1,18 +1,20 @@
 const loadDB = require('./db');
 const logger = require("../logger");
+const { Senator, SenateCandidate, Fara } = require("./schemas/data");
+const { User } = require("./schemas/user");
 
 const getUsers = async (search) => {
     
-    const { db, client } = await loadDB();
-    
-    const collection = await db.collection('users');
-    let results = await collection.find(search).project({ email: 1, _id: 0 }).toArray()  // Get users w/ this search...
-    results = results.map(({ email }) => email);
-
-    const closing = client.close();
-    return closing.then(() => results);
+    const db = await loadDB();
+    const usersObj = await User.find();
+    const users = usersObj.map((user) => user.email);
+    return db.disconnect().then(() => users);
 
 };
+
+getUsers({ email: 'hcramer@nationaljournal.com'})
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
 
 const updateDb = async (data, whichCollection) => {
 
