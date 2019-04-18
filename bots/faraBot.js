@@ -2,6 +2,7 @@ const cheerio = require("cheerio");
 
 const { mailer, asyncForEach } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
+const { Fara } = require("../mongodb/schemas/data");
 
 const fetchFara = async (url, page) => { 
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
@@ -38,7 +39,7 @@ const bot = async (page, today) => {
     const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
 
     return fetchFara(link, page)
-        .then(async(results) => updateDb(results, "fara"))
+        .then(async(results) => updateDb(results, Fara))
         .then(async(res) => {
             let text = '–––New filings––– \n';
             if(res.length > 0){

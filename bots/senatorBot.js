@@ -3,6 +3,7 @@ const moment = require("moment");
 
 const { mailer } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
+const { Senator } = require("../mongodb/schemas/data");
 
 const fetchContracts = async (url, page) => {
     
@@ -72,7 +73,7 @@ const bot = async (page, today) => {
 
         return results;
     })
-    .then((results) => updateDb(results, "senators"))
+    .then((results) => updateDb(results, Senator))
     .then(async(results) => {
         let text = '–––New filings––– \n';
         if(results.length > 0){
