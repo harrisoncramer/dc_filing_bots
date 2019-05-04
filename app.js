@@ -70,5 +70,5 @@ if(environment === 'production'){
             process.exit();
         });
 } else {
-    logger.debug("Environment variable not set.")
+    logger.debug("Environment variable not set.");
 };

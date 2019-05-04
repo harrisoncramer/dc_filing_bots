@@ -8,17 +8,18 @@ const getUsers = async (search) => {
     const db = await loadDB();
     const fullUsers = await User.find(search);
     const users = fullUsers.map((user) => user.email);
-    return db.disconnect().then(() => users);
-
+    await db.disconnect();
+    return users;
 };
 
 const updateDb = async (data, Model) => {
 
-    if(data.length === 0)
+    if(data.length === 0){
         return [];
+    };
 
     const db = await loadDB();
-    const results = await Model.find({})
+    const results = await Model.find({});
 
     /// Determining any of the scraped data is new....
     let newData;
@@ -39,7 +40,8 @@ const updateDb = async (data, Model) => {
         await Model.insertMany(newData).then(() => logger.info(`${Model.modelName} - ${newData.length} documents inserted!`));
     }
     
-    return db.disconnect().then(() => newData);
+    await db.disconnect();
+    return newData;
 };
 
 module.exports = {
