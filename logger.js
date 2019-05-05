@@ -4,7 +4,7 @@ const path = require('path');
 const { environment } = require("./keys/config");
 const logDir = 'log';
 const moment = require("moment");
-const today = moment().format('llll');
+
 // Create the log directory if it does not exist
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
@@ -24,7 +24,7 @@ const logger = winston.createLogger({
 
 					const message = info[Symbol.for('splat')] ? info.message + ' - ' + info[Symbol.for('splat')][0] : info.message;
 
-					return `[${today}][PID=${process.pid}][${info.level}]: ${message}`;
+					return `[${moment(info.timestamp).format("llll")}][PID=${process.pid}][${info.level}]: ${message}`;
 				})
 			)
     }),
