@@ -7,13 +7,14 @@ const logger = require("./logger");
 const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
+const acluBot = require("./bots/acluBot");
 
-const { environment, schedule } = require("./keys/config.js");
+const { environment, scheduleFifteen, scheduleFive } = require("./keys/config.js");
 let today = environment === "production" ? moment() : moment("04-09-2019");
 
 logger.info(`Starting up program in ${environment} on ${today.format("MM-DD-YYYY")}`);
 
-const launchBots = async() => {
+const launchFifteenBots = async() => {
 
     today = environment === "production" ? moment() : moment("04-09-2019");
     const headless = environment === "production";
@@ -56,19 +57,59 @@ const launchBots = async() => {
     logger.info(`Chrome Closed Bots.`);
 };
 
+const launchFiveBots = async() => {
+    
+    const headless = environment === "production";
+    const browser = await pupeteer.launch({ headless, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    const page = await browser.newPage(); // Create new instance of puppet
+    
+    page.on('error', (err) => {
+        logger.error('Puppeteer error.', err);
+    });
+
+    await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
+    page.on('request', (request) => {
+        if(['image', 'stylesheet'].includes(request.resourceType())){
+            request.abort();
+        } else {
+            request.continue();
+        }
+    });
+        
+    try {
+        await acluBot(page).then(res => logger.info(res));
+    } catch(err) {
+        logger.error(`ACLU Bot Error - `, err);
+    }
+
+    await page.close();
+    await browser.close();
+    logger.info(`Chrome Closed Aclu Bot.`);
+};
+
 
 if(environment === 'production'){
-    cron.schedule(schedule, async () => {   
-        launchBots()
-            .catch(err => logger.error('Launch bot error.', err));
+    cron.schedule(scheduleFifteen, async () => {   
+        launchFifteenBots()
+            .catch(err => logger.error('Launch bot error (15).', err));
     });
+
+    cron.schedule(scheduleFive, async() => {
+        launchFiveBots()
+            .catch(err => logger.error('Launch bot error (5).', err));
+    });
+
 } else if (environment === 'development') {
-    launchBots()
-        .then(() => process.exit())
+    launchFifteenBots()
         .catch(err => {
-            logger.error('Launch bot error.', err)
-            process.exit();
+            logger.error('Launch bot error (15).', err)
         });
+
+    launchFiveBots()
+        .catch(err => {
+            logger.error('Launch bot error (5).', err)
+        });
+        
 } else {
     logger.debug("Environment variable not set.");
 };

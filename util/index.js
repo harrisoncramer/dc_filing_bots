@@ -14,8 +14,8 @@ var transporter = nodemailer.createTransport({
   });
   
 
-const mailer = (emails, text, subject) => {
-    if(environment === 'development')
+const mailer = (emails, text, subject, mailDuringDevelopment) => {
+    if(environment === 'development' && !mailDuringDevelopment)
         return Promise.resolve("Not mailing in dev server...")
     
     const promises = emails.map(email => {

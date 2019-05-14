@@ -50,7 +50,7 @@ const bot = async (page, today) => {
                 });
 
                 const emails = await getUsers({ fara: true });        
-                return mailer(emails, text, 'Foreign Lobbyist(s)').then((res) => {
+                return mailer(emails, text, 'Foreign Lobbyist(s)', false).then((res) => {
                     res = res.length > 0 ? res : 'fara - nobody to email!';
                     return res;
                 });

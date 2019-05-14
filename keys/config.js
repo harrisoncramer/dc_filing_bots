@@ -9,12 +9,14 @@ const nodemailerConfig = {
 };
 
 const environment = process.env.NODE_ENV;
-const schedule = process.env.NODE_ENV === "development" ? '* * * * *' : '*/15 * * * *';
+const scheduleFifteen = process.env.NODE_ENV === "development" ? '* * * * *' : '*/15 * * * *';
+const scheduleFive = process.env.NODE_ENV === "development" ? '* * * * *' : '*/5 * * * *';
 
 module.exports = {
   nodemailerConfig,
   environment,
-  schedule
+  scheduleFifteen,
+  scheduleFive
 };
 
 // From dotenv file...

@@ -80,7 +80,7 @@ const bot = (page, today) => {
             });
 
             const emails = await getUsers({ senateCandidates: true })
-            return mailer(emails, text, 'Senate Candidate Disclosure(s)').then((res) => {
+            return mailer(emails, text, 'Senate Candidate Disclosure(s)', false).then((res) => {
                 res = res.length > 0 ? res : 'senateCandidates - nobody to email!';
                 return res;
             });

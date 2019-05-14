@@ -1,6 +1,7 @@
 const loadDB = require('./db');
 const logger = require("../logger");
 const { Senator, SenateCandidate, Fara } = require("./schemas/data");
+const { Aclu } = require("./schemas/aclu");
 const { User } = require("./schemas/user");
 
 const getUsers = async (search) => {
@@ -44,7 +45,24 @@ const updateDb = async (data, Model) => {
     return newData;
 };
 
+const checkBorderCase = async (number) => {
+    
+    const db = await loadDB();
+    let dbNumber = await Aclu.find();
+    dbNumber = dbNumber[0].borderCase;
+
+    // await logger.info(`DB Border Case Docs ${dbNumber}, ACLU Webpage Docs: ${number}`);
+    if(dbNumber < number){
+        await Aclu.updateOne({ "borderCase" : dbNumber }, { $set: { "borderCase": number }});
+    };
+
+    await db.disconnect();
+    return dbNumber < number; // Return either true or false, depending on what database says...
+
+};
+
 module.exports = {
     getUsers,
-    updateDb
+    updateDb,
+    checkBorderCase
 }
