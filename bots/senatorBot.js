@@ -73,11 +73,11 @@ const bot = async (page, today) => {
 
         return results;
     })
-    .then((results) => updateDb(results, Senator))
-    .then(async(results) => {
+    .then(async(results) => updateDb(results, Senator))
+    .then(async(newData, updates) => {
         let text = '–––New filings––– \n';
-        if(results.length > 0){
-          results.forEach(({ first, last, link}) => {
+        if(newData.length > 0){
+          newData.forEach(({ first, last, link}) => {
               const textPlus = `${first} ${last}: ${link}\n`;
               text = text.concat(textPlus);
           });

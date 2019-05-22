@@ -33,17 +33,17 @@ const fetchFara = async (url, page) => {
         return results;
 };
 
-const bot = async (page, today) => {
+const bot = async (page, today, sevenDaysAgo) => {
 
     const todayUri = today.replace(/-/g,"\%2F"); // Create uri string...
-    const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${todayUri},${todayUri}`; // Fetch today's data...
+    const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${sevenDaysAgo},${todayUri}`; // Fetch today's data...
 
     return fetchFara(link, page)
         .then(async(results) => updateDb(results, Fara))
-        .then(async(res) => {
+        .then(async(newData, updates) => {
             let text = '–––New filings––– \n';
-            if(res.length > 0){
-                res.forEach(({ registrant, allLinks }) => {
+            if(newData.length > 0){
+                newData.forEach(({ registrant, allLinks }) => {
                     text = text.concat(registrant).concat("\n");
                     allLinks.forEach(link => text = text.concat(link + "\n"));
                     text = text.concat("\n");

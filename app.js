@@ -25,14 +25,16 @@ const launchFifteenBots = async() => {
         logger.error('Puppeteer error.', err);
     });
 
-    await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
-    page.on('request', (request) => {
-        if(['image', 'stylesheet'].includes(request.resourceType())){
-            request.abort();
-        } else {
-            request.continue();
-        }
-    });
+    if(environment === "production"){
+        await page.setRequestInterception(true) // Optimize (no stylesheets, images)...
+        page.on('request', (request) => {
+            if(['image', 'stylesheet'].includes(request.resourceType())){
+                request.abort();
+            } else {
+                request.continue();
+            }
+        });
+    };
         
     try {
         await senatorBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
@@ -47,7 +49,7 @@ const launchFifteenBots = async() => {
     }
 
     try {
-        await faraBot(page, today.format("MM-DD-YYYY")).then(res => logger.info(res));
+        await faraBot(page, today.format("MM-DD-YYYY"), today.subtract(7, 'days').format("MM-DD-YYYY")).then(res => logger.info(res));
     } catch(err) {
         logger.error(`Fara Bot Error - `, err);
     }

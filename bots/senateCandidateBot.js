@@ -71,10 +71,10 @@ const bot = (page, today) => {
         return results;
     })
     .then(async(results) => updateDb(results, SenateCandidate)) /// Update database w/ new data...
-    .then(async(results) => { /// Send email of new data...
+    .then(async(newData, updates) => {
         let text = '–––New filings––– \n';
-        if(results.length > 0){
-            results.forEach(({ first, last, link}) => {
+        if(newData.length > 0){
+            newData.forEach(({ first, last, link}) => {
                 const textPlus = `${first} ${last}: ${link}\n`;
                 text = text.concat(textPlus);
             });

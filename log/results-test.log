@@ -1,0 +1,77 @@
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"level":"error","message":"SenatorBot Error - Cannot read property 'length' of undefined","stack":"TypeError: Cannot read property 'length' of undefined\n    at fetchContracts.then.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senatorBot.js:79:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"level":"error","message":"SenateCandidate Bot Error - Cannot read property 'length' of undefined","stack":"TypeError: Cannot read property 'length' of undefined\n    at fetchContracts.then.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:76:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"level":"error","message":"SenatorBot Error - Cannot read property 'length' of undefined","stack":"TypeError: Cannot read property 'length' of undefined\n    at fetchContracts.then.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senatorBot.js:79:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"level":"error","message":"SenateCandidate Bot Error - Cannot read property 'length' of undefined","stack":"TypeError: Cannot read property 'length' of undefined\n    at fetchContracts.then.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:76:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"fara - no updates","level":"info"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}
+{"level":"error","message":"SenateCandidate Bot Error - Cannot read property 'length' of undefined","stack":"TypeError: Cannot read property 'length' of undefined\n    at fetchContracts.then.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:76:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"fara - no updates","level":"info"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}
+{"level":"error","message":"SenateCandidate Bot Error - Cannot read property 'length' of undefined","stack":"TypeError: Cannot read property 'length' of undefined\n    at fetchContracts.then.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:76:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"fara - no updates","level":"info"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"name":"TimeoutError","level":"error","message":"SenateCandidate Bot Error - Navigation Timeout Exceeded: 30000ms exceeded","stack":"TimeoutError: Navigation Timeout Exceeded: 30000ms exceeded\n    at Promise.then (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/LifecycleWatcher.js:143:21)\n  -- ASYNC --\n    at Frame.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:108:27)\n    at Page.goto (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/Page.js:656:49)\n    at Page.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:109:23)\n    at fetchContracts (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:10:20)\n    at bot (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:38:12)\n    at launchFifteenBots (/Users/harrisoncramer/Desktop/bots/app.js:46:15)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"level":"error","message":"SenateCandidate Bot Error - No node found for selector: .form-check-input.candidate_filer","stack":"Error: No node found for selector: .form-check-input.candidate_filer\n    at assert (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:229:11)\n    at DOMWorld.click (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/DOMWorld.js:359:5)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)\n  -- ASYNC --\n    at Frame.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:108:27)\n    at Page.click (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/Page.js:1015:29)\n    at fetchContracts (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:12:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"level":"error","message":"SenateCandidate Bot Error - No node found for selector: .form-check-input.candidate_filer","stack":"Error: No node found for selector: .form-check-input.candidate_filer\n    at assert (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:229:11)\n    at DOMWorld.click (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/DOMWorld.js:359:5)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)\n  -- ASYNC --\n    at Frame.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:108:27)\n    at Page.click (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/Page.js:1015:29)\n    at fetchContracts (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:12:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"level":"error","message":"SenateCandidate Bot Error - net::ERR_NETWORK_CHANGED at https://efdsearch.senate.gov/search/","stack":"Error: net::ERR_NETWORK_CHANGED at https://efdsearch.senate.gov/search/\n    at navigate (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/FrameManager.js:101:37)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)\n  -- ASYNC --\n    at Frame.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:108:27)\n    at Page.goto (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/Page.js:656:49)\n    at Page.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:109:23)\n    at fetchContracts (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:10:20)\n    at bot (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:38:12)\n    at launchFifteenBots (/Users/harrisoncramer/Desktop/bots/app.js:46:15)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"level":"error","message":"SenateCandidate Bot Error - net::ERR_INTERNET_DISCONNECTED at https://efdsearch.senate.gov/search/","stack":"Error: net::ERR_INTERNET_DISCONNECTED at https://efdsearch.senate.gov/search/\n    at navigate (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/FrameManager.js:101:37)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)\n  -- ASYNC --\n    at Frame.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:108:27)\n    at Page.goto (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/Page.js:656:49)\n    at Page.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:109:23)\n    at fetchContracts (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:10:20)\n    at bot (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:38:12)\n    at launchFifteenBots (/Users/harrisoncramer/Desktop/bots/app.js:46:15)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"level":"error","message":"SenateCandidate Bot Error - No node found for selector: .form-check-input.candidate_filer","stack":"Error: No node found for selector: .form-check-input.candidate_filer\n    at assert (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:229:11)\n    at DOMWorld.click (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/DOMWorld.js:359:5)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)\n  -- ASYNC --\n    at Frame.<anonymous> (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/helper.js:108:27)\n    at Page.click (/Users/harrisoncramer/Desktop/bots/node_modules/puppeteer/lib/Page.js:1015:29)\n    at fetchContracts (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:12:20)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"acluCases - no updates","level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}
+{"message":"senateCandidates - no updates","level":"info"}
+{"message":"fara - no updates","level":"info"}
+{"message":"Chrome Closed Bots.","level":"info"}

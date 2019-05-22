@@ -16,7 +16,8 @@ const logger = winston.createLogger({
 	transports: [
 		new (winston.transports.Console)({
 			// silent: !!process.env.TEST_ENV,
-			level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+			// level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+			level: 'info',
 			format: winston.format.combine(
 				winston.format.timestamp(),
 				winston.format.colorize(),
