@@ -9,22 +9,31 @@ const getUsers = async (search) => {
     
     const db = await loadDB();
     const fullUsers = await User.find(search);
-    const users = fullUsers.map((user) => user.email);
+    const users = fullUsers.map((user) => {
+        user = user.toObject();
+        if(user.method === 'google'){
+            return user.google.email;
+        }
+        if(user.method === 'local'){
+            return user.local.email;
+        }
+    });
     await db.disconnect();
     return users;
 };
 
 const updateDb = async (data, Model) => {
 
+    let newData = updates = [];
+
     if(data.length === 0){
-        return [];
+        return { newData, updates };
     };
 
     const db = await loadDB();
     const databaseData = await Model.find({});
 
     /// Determining any of the scraped data is new or contains updates.....
-    let newData = updates = [];
 
     switch(Model){
         case Senator:
@@ -73,7 +82,8 @@ const updateDb = async (data, Model) => {
     }
     
     await db.disconnect();
-    return { newData, updates };
+    let res = { newData, updates };
+    return res;
 };
 
 const checkBorderCase = async (number) => {

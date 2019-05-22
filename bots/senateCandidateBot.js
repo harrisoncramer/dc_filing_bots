@@ -33,7 +33,7 @@ const fetchContracts = async (url, page) => {
 
 }
 
-const bot = (page, today) => {
+const bot = async (page, today) => {
 
     return fetchContracts("https://efdsearch.senate.gov/search/", page) /// Get html...
     .then(async(html) => {  /// Parse html w/ cheerio...
@@ -71,7 +71,7 @@ const bot = (page, today) => {
         return results;
     })
     .then(async(results) => updateDb(results, SenateCandidate)) /// Update database w/ new data...
-    .then(async(newData, updates) => {
+    .then(async({ newData, updates }) => {
         let text = '–––New filings––– \n';
         if(newData.length > 0){
             newData.forEach(({ first, last, link}) => {
@@ -79,7 +79,7 @@ const bot = (page, today) => {
                 text = text.concat(textPlus);
             });
 
-            const emails = await getUsers({ senateCandidates: true })
+            const emails = await getUsers({ "data.senateCandidates": true })
             return mailer(emails, text, 'Senate Candidate Disclosure(s)', false).then((res) => {
                 res = res.length > 0 ? res : 'senateCandidates - nobody to email!';
                 return res;

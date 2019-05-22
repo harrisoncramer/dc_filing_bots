@@ -40,17 +40,26 @@ const bot = async (page, today, sevenDaysAgo) => {
 
     return fetchFara(link, page)
         .then(async(results) => updateDb(results, Fara))
-        .then(async(newData, updates) => {
+        .then(async({ newData, updates }) => {
             let text = '–––New filings––– \n';
-            if(newData.length > 0){
-                newData.forEach(({ registrant, allLinks }) => {
-                    text = text.concat(registrant).concat("\n");
-                    allLinks.forEach(link => text = text.concat(link + "\n"));
-                    text = text.concat("\n");
-                });
-
-                const emails = await getUsers({ fara: true });        
-                return mailer(emails, text, 'Foreign Lobbyist(s)', false).then((res) => {
+            if(newData.length + updates.length > 0){
+                if(newData.length > 0){
+                    newData.forEach(({ registrant, allLinks }) => {
+                        text = text.concat(registrant).concat("\n");
+                        allLinks.forEach(link => text = text.concat(link + "\n"));
+                        text = text.concat("\n");
+                    });
+                }
+                if(updates.length > 0){
+                    updates.forEach(({ registrant, newLinks }) => {
+                        text = text.concat(`\n–––New Links for ${registrant}`);
+                        newLinks.forEach(link => text = text.concat(`\n${link}`));
+                    });
+                }
+                
+                const emails = await getUsers({ "data.fara": true });
+                console.log(emails);        
+                return mailer(emails, text, 'Foreign Lobbyist(s)', true).then((res) => {
                     res = res.length > 0 ? res : 'fara - nobody to email!';
                     return res;
                 });

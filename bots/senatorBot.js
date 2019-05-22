@@ -74,7 +74,7 @@ const bot = async (page, today) => {
         return results;
     })
     .then(async(results) => updateDb(results, Senator))
-    .then(async(newData, updates) => {
+    .then(async({ newData, updates }) => {
         let text = '–––New filings––– \n';
         if(newData.length > 0){
           newData.forEach(({ first, last, link}) => {
@@ -82,7 +82,7 @@ const bot = async (page, today) => {
               text = text.concat(textPlus);
           });
 
-        const emails = await getUsers({ senators: true });
+        const emails = await getUsers({ "data.senators": true });
         return mailer(emails, text, 'Senate Disclosure(s)', false).then((res) => {
             res = res.length > 0 ? res : 'senators - nobody to email!';
             return res;
