@@ -1,0 +1,12 @@
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":[{"accepted":["hcramer@nationaljournal.com"],"rejected":[],"envelopeTime":477,"messageTime":721,"messageSize":517,"response":"250 2.0.0 OK  1559251468 w189sm1763050qkc.38 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["hcramer@nationaljournal.com"]},"messageId":"<b14db6d8-a9ce-b1e4-6f50-92195bf01e49@nationaljournal.com>"}],"level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}
+{"message":"senateCandidates - no updates","level":"info"}
+{"level":"error","message":"Fara Bot Error - moment is not defined","stack":"ReferenceError: moment is not defined\n    at newData.map.item (/Users/harrisoncramer/Desktop/bots/mongodb/index.js:75:81)\n    at Array.map (<anonymous>)\n    at updateDb (/Users/harrisoncramer/Desktop/bots/mongodb/index.js:75:27)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Bots.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":[{"accepted":["hcramer@nationaljournal.com"],"rejected":[],"envelopeTime":219,"messageTime":894,"messageSize":556,"response":"250 2.0.0 OK  1559251690 k65sm1935952qkf.46 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["hcramer@nationaljournal.com"]},"messageId":"<21b5bd38-608e-f8a0-3d94-25d6def30d32@nationaljournal.com>"}],"level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}
+{"message":"senateCandidates - no updates","level":"info"}

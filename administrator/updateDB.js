@@ -1,0 +1,33 @@
+const loadDB = require("../mongodb/db");
+const { Senator } = require("../mongodb/schemas/data");
+const { asyncForEach } = require("../util");
+// const moment = require("moment");
+
+const updateTimes = async () => {
+    const db = await loadDB();
+    const allSenators = await Senator.find({});
+    const senators = allSenators.map((senator) => {
+        senator = senator.toObject();
+        return senator;
+    });
+
+    // The old version...
+    // await asyncForEach(senators, async (senator) => {
+    //     await Senator.updateOne({ _id: senator._id }, { "createdAt": new Date() });
+    // });
+
+    await asyncForEach(senators, async (senator) => {
+        let curDate = senator.createdAt;
+        let updatedDate = new Date(curDate).getTime();
+        updatedDate = updatedDate.toString();
+        if((updatedDate !== "NaN") && (typeof updatedDate === "string")){
+            await Senator.updateOne({ _id: senator._id }, { "createdAt": updatedDate });
+        } else {
+            console.log(curDate, typeof updatedDate, updatedDate);
+        }
+    });
+
+    await db.disconnect();
+}
+
+updateTimes();

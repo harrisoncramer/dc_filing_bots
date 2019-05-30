@@ -18,12 +18,14 @@ const mailer = (emails, text, subject, mailDuringDevelopment) => {
     if(environment === 'development' && !mailDuringDevelopment)
         return Promise.resolve("Not mailing in dev server...")
     
+    text = text.concat("\n\nLogin to <a href='https://www.dcdocs.app/dashboard'>dcdocs.app</a> to edit your alert preferences.");
+
     const promises = emails.map(email => {
         let HelperOptions = {
             from: 'FiDi Bot <hcramer@nationaljournal.com>',
             to: email,
             subject,
-            text
+            html: text
         };
         return transporter.sendMail(HelperOptions);
     });
