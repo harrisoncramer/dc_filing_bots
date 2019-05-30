@@ -16,6 +16,7 @@ const updateTimes = async () => {
     //     await Senator.updateOne({ _id: senator._id }, { "createdAt": new Date() });
     // });
 
+    // This was used to switch the formatting from "new date()" to simple number strings...
     await asyncForEach(senators, async (senator) => {
         let curDate = senator.createdAt;
         let updatedDate = new Date(curDate).getTime();
