@@ -10,3 +10,17 @@
 {"message":"Chrome Closed Aclu Bot.","level":"info"}
 {"message":"senators - no updates","level":"info"}
 {"message":"senateCandidates - no updates","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"level":"error","message":"ACLU Bot Error - Cannot read property 'borderCase' of undefined","stack":"TypeError: Cannot read property 'borderCase' of undefined\n    at checkBorderCase (/Users/harrisoncramer/Desktop/bots/mongodb/index.js:94:28)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":[{"accepted":["hcramer@nationaljournal.com"],"rejected":[],"envelopeTime":269,"messageTime":983,"messageSize":558,"response":"250 2.0.0 OK  1559251916 x2sm2480914qke.92 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["hcramer@nationaljournal.com"]},"messageId":"<929c68c3-271e-cd36-8317-f3b27b38f19f@nationaljournal.com>"}],"level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":[{"accepted":["hcramer@nationaljournal.com"],"rejected":[],"envelopeTime":349,"messageTime":735,"messageSize":558,"response":"250 2.0.0 OK  1559252076 i2sm1633065qtp.78 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["hcramer@nationaljournal.com"]},"messageId":"<53913e19-7fd3-9519-6565-6c49384cd4f5@nationaljournal.com>"}],"level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":[{"accepted":["hcramer@nationaljournal.com"],"rejected":[],"envelopeTime":272,"messageTime":994,"messageSize":558,"response":"250 2.0.0 OK  1559252137 n190sm1905214qkb.83 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["hcramer@nationaljournal.com"]},"messageId":"<1d72c879-7f34-f99e-a05d-ce575485e538@nationaljournal.com>"}],"level":"info"}
+{"message":"Chrome Closed Aclu Bot.","level":"info"}
+{"message":"senators - no updates","level":"info"}

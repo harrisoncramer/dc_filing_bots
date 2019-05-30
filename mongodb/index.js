@@ -95,7 +95,8 @@ const checkBorderCase = async (number) => {
 
     // await logger.info(`DB Border Case Docs ${dbNumber}, ACLU Webpage Docs: ${number}`);
     if(dbNumber < number){
-        await Aclu.updateOne({ "borderCase" : dbNumber }, { $set: { "borderCase": number }});
+        let createdAt = moment().valueOf().toString();
+        await Aclu.updateOne({ "borderCase" : dbNumber }, { $set: { "borderCase": number, "createdAt": createdAt }});
     };
 
     await db.disconnect();
