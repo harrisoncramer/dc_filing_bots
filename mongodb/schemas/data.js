@@ -9,12 +9,12 @@ const Fara = mongoose.model('Fara', {
         type: String,
         require: true,
     },
-    createdAt: {
-        type: String,
-        require: true,
-    },
     number: {
         type: String,
+        require: true
+    },
+    date: {
+        type: Number,
         require: true
     }
 },'fara');
@@ -31,10 +31,6 @@ const SenateCandidate = mongoose.model('SenateCandidate', {
     link: {
         type: String,
         require: true,
-    },
-    createdAt: {
-        type: String,
-        require: true,
     }
 }, 'senateCandidates');
 
@@ -48,10 +44,6 @@ const Senator = mongoose.model('Senator', {
         require: true,
     },
     link: {
-        type: String,
-        require: true,
-    },
-    createdAt: {
         type: String,
         require: true,
     }

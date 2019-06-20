@@ -251,3 +251,9 @@
 {"message":"Fara - 1 documents modified.","level":"info"}
 {"message":[{"accepted":["harrisoncramer@gmail.com"],"rejected":[],"envelopeTime":190,"messageTime":669,"messageSize":936,"response":"250 2.0.0 OK  1561005951 z50sm14928504qtz.36 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["harrisoncramer@gmail.com"]},"messageId":"<3f7fbb25-a77f-3f95-42f1-b62e9a671e3d@nationaljournal.com>"}],"level":"info"}
 {"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Fara - 9 documents inserted!","level":"info"}
+{"message":[{"accepted":["harrisoncramer@gmail.com"],"rejected":[],"envelopeTime":183,"messageTime":916,"messageSize":2196,"response":"250 2.0.0 OK  1561053560 d17sm127016qtp.84 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["harrisoncramer@gmail.com"]},"messageId":"<d476cb7e-797f-87d9-e075-f32c76d446d5@nationaljournal.com>"}],"level":"info"}
+{"message":"Starting up program in development on 04-09-2019","level":"info"}
+{"message":"Fara - 9 documents inserted!","level":"info"}
+{"message":[{"accepted":["harrisoncramer@gmail.com"],"rejected":[],"envelopeTime":302,"messageTime":731,"messageSize":2196,"response":"250 2.0.0 OK  1561063031 z12sm343207qkf.20 - gsmtp","envelope":{"from":"hcramer@nationaljournal.com","to":["harrisoncramer@gmail.com"]},"messageId":"<2ab76181-6eb8-dc70-9e81-3cf392e708be@nationaljournal.com>"}],"level":"info"}

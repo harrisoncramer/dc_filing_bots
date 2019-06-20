@@ -54,7 +54,7 @@ const updateDb = async (data, Model ) => {
     let updates = res.updates;
     
     if(newData.length > 0){ // If new, create new time stamp, and add to database...
-        newData = newData.map(item => ({ ...item, createdAt: moment().valueOf().toString() }))
+        newData = newData.map(item => ({ ...item }))
         await Model.insertMany(newData).then(() => logger.info(`${Model.modelName} - ${newData.length} documents inserted!`));
     }
     if(updates.length > 0){
