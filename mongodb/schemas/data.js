@@ -12,6 +12,10 @@ const Fara = mongoose.model('Fara', {
     createdAt: {
         type: String,
         require: true,
+    },
+    number: {
+        type: String,
+        require: true
     }
 },'fara');
 

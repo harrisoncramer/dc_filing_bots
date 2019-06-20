@@ -1,44 +1,48 @@
 const cheerio = require("cheerio");
 
-const { mailer, asyncForEach } = require("../util");
+const { mailer } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
 const { Fara } = require("../mongodb/schemas/data");
+const moment = require("moment");
 
-const fetchFara = async (url, page) => { 
-        await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
-        const tableHandle = await page.$("div[id='apexir_DATA_PANEL'] tbody"); // page.$("div[id='apexir_DATA_PANEL'] tbody tr[class='even']");
-        const html = await page.evaluate(body => body.innerHTML, tableHandle);
-        await tableHandle.dispose();
-
-        const $ = cheerio.load(html);
-        const names = $("td[headers='NAME']").map((i,td) => $(td).text()).toArray();
-        let links = $('td a:first-child').map((i, link) => $(link).attr("href")).toArray();
-        links = links.map((link, i) => ({ url: `https://efile.fara.gov/pls/apex/${link}`, registrant: names[i] }));
+const fetchFara = async ({ url, page, today }) => { 
         
-        const getLinks = async ({ url, registrant }) => {
-            
-            await page.goto(url, { waitUntil: 'networkidle2', timeout: 10000 }); // Navigate to each page...
+        page.on('console', consoleObj => console.log(consoleObj.text()));
 
-            const bodyHandle = await page.$("body div[id='apexir_DATA_PANEL'] tbody"); // page.$("div[id='apexir_DATA_PANEL'] tbody tr[class='even']");
-            const html = await page.evaluate(body => body.innerHTML, bodyHandle);
-            await bodyHandle.dispose();
+        await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
 
-            const $$ = cheerio.load(html);
-            const allLinks = $$('a').map((i, link) => $(link).attr("href")).toArray();
+        await page.select("#P10_DOCTYPE", "ALL") // Select all documents...
+        await page.$eval(".datepicker input[name='P10_STAMP1']", (el, value) => el.value = value, today); // Fill out input dates
+        await page.$eval(".datepicker input[name='P10_STAMP2']", (el, value) => el.value = value, today);
 
-            return { allLinks, registrant };
-        };
+        await page.click("input[id='SEARCH']"); // SEARCH
+        await page.waitForNavigation();
 
-        const results = await asyncForEach(links, getLinks);
-        return results;
+        const res = await page.evaluate(() => {
+            return document.body.innerHTML;
+        });
+
+        let $ = cheerio.load(res);
+        let trs = $(".t14Standard tbody tr.highlight-row");
+
+        let data = trs.map((i, tr) => {
+            const link = $(tr).find("a").attr("href");
+            const number = $(tr).find("td[headers='REGISTRATIONNUMBER']").text();
+            const registrant = $(tr).find("td[headers='REGISTRANTNAME']").text();
+            const type = $(tr).find("td[headers='DOCUMENTTYPE']").text();
+            const date = moment($(tr).find("td[headers='STAMPED/RECEIVEDDATE']").text()).valueOf().toString();
+            return { link, number, registrant, type, date };
+        });
+
+        return data;      
 };
 
-const bot = async (page, today, sevenDaysAgo) => {
+const bot = async (page, today) => {
 
-    const todayUri = today.replace(/-/g,"\%2F"); // Create uri string...
-    const link = `https://efile.fara.gov/pls/apex/f?p=181:6:0::NO:6:P6_FROMDATE,P6_TODATE:${sevenDaysAgo},${todayUri}`; // Fetch today's data...
+    today = today.replace(/-/g,"\/"); // Create uri string...
+    const url = 'https://efile.fara.gov/ords/f?p=145:10:10176611235469::NO::P10_DOCTYPE:ALL'
 
-    return fetchFara(link, page)
+    return fetchFara({ url, page, today })
         .then(async(results) => updateDb(results, Fara))
         .then(async({ newData, updates }) => {
             let text = '–––New filings––– \n';
@@ -51,9 +55,9 @@ const bot = async (page, today, sevenDaysAgo) => {
                     });
                 }
                 if(updates.length > 0){
-                    updates.forEach(({ registrant, newLinks }) => {
+                    updates.forEach(({ registrant, links }) => {
                         text = text.concat(`\n–––New Links for ${registrant}`);
-                        newLinks.forEach(link => text = text.concat(`\n${link}`));
+                        links.forEach(lk => text = text.concat(`\n${lk}`));
                     });
                 }
                 
@@ -66,7 +70,8 @@ const bot = async (page, today, sevenDaysAgo) => {
             } else {
                 return 'fara - no updates';
             }
-        });
+        })
+        .catch((err) => console.log(err));
 };
 
 module.exports = bot;

@@ -1,10 +1,14 @@
-const loadDB = require('./db');
+const moment = require("moment");
 const logger = require("../logger");
+
 const { Senator, SenateCandidate, Fara } = require("./schemas/data");
+const loadDB = require('./db');
+
 const { Aclu } = require("./schemas/aclu");
 const { User } = require("./schemas/user");
 const { asyncForEach } = require("../util");
-const moment = require("moment");
+
+const { faraBusiness, senatorBusiness, senateCandidateBusiness } = require("./business");
 
 const getUsers = async (search) => {
     
@@ -23,68 +27,44 @@ const getUsers = async (search) => {
     return users;
 };
 
-const updateDb = async (data, Model) => {
+const updateDb = async (data, Model ) => {
 
-    let newData = updates = [];
+    data = data.toArray();
 
     if(data.length === 0){
-        return { newData, updates };
+        return { newData, updates }; // Return empty arrays w/out new data
     };
 
     const db = await loadDB();
     const databaseData = await Model.find({});
+    let res;
 
-    /// Determining any of the scraped data is new or contains updates.....
-
-    switch(Model){
+    switch(Model){ /// Determining any of the scraped data is new or contains updates.....
         case Senator:
+            res = senateCandidateBusiness({ data, databaseData });
         case SenateCandidate:
-            newData = data.filter(newObject => !databaseData.some(databaseObject => databaseObject.link === newObject.link));
+            res = senatorBusiness({ data, databaseData });
             break;
         case Fara:
-            let possiblyNew = [];
-            newData = data.filter(newObject => {
-                let isNew = !databaseData.some(databaseObject => (databaseObject.registrant === newObject.registrant));
-                if(isNew){ 
-                    return isNew 
-                } else {
-                    possiblyNew.push(newObject);
-                    return false;
-                };
-            });
-            if(possiblyNew.length){
-                updates = possiblyNew.map(newObject => {
-                    const dataForCompare = databaseData.filter(databaseObject => databaseObject.registrant === newObject.registrant); // Array of 1, the correct registrant...
-                    let id = '';
-                    let newLinks = newObject.allLinks.filter(link => {
-                        if(!dataForCompare[0].allLinks.includes(link)){
-                            id = dataForCompare[0].id;
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                    return { registrant: newObject.registrant, newLinks, id };
-                }).filter(newObject => newObject.newLinks.length > 0);
-            };
-            break;
-        default:
-            newData = updates = [];            
+            res = faraBusiness({ data, databaseData });          
+            break;    
     };
 
+    let newData = res.newData; 
+    let updates = res.updates;
+    
     if(newData.length > 0){ // If new, create new time stamp, and add to database...
         newData = newData.map(item => ({ ...item, createdAt: moment().valueOf().toString() }))
         await Model.insertMany(newData).then(() => logger.info(`${Model.modelName} - ${newData.length} documents inserted!`));
     }
     if(updates.length > 0){
         await asyncForEach(updates, async(update) => {
-            await Model.updateOne({ "_id": update.id }, { $push: { allLinks : update.newLinks }}).then(() => logger.info(`${Model.modelName} - ${updates.length} documents modified.`));
+            await Model.updateOne({ "_id": update.id }, { $push: { allLinks : update.links }}).then(() => logger.info(`${Model.modelName} - ${updates.length} documents modified.`));
         });
     }
     
     await db.disconnect();
-    let res = { newData, updates };
-    return res;
+    return { newData, updates };
 };
 
 const checkBorderCase = async (number) => {
