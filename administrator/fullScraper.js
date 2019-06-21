@@ -2,7 +2,7 @@ const cheerio = require("cheerio");
 const pupeteer = require("puppeteer");
 const moment = require("moment");
 
-const { SenateCandidate  } = require("../mongodb/schemas/data");
+const { SenateCandidate, Senator  } = require("../mongodb/schemas/data");
 const { uploadDocs } = require("./DB");
 
 const parseResults1 = async(html) => {
@@ -32,7 +32,7 @@ const parseResults2 = async(data) => {
             first: datum.tds[0].trim(),
             last: datum.tds[1].trim(),
             link,
-            createdAt: moment(datum.tds[4]).valueOf().toString()
+            date: moment(datum.tds[4]).valueOf().toString()
         })
     });
 
@@ -51,7 +51,7 @@ const launchScraper = async() => {
             .then(parseResults2)
             .then(async(results) => {
                 let fullresults = results;
-                let pageLength = 15;
+                let pageLength = 105;
                 let index = 0; // Could be simple for loop, but what are you gonna do...
                 while (index < pageLength - 1){
 
@@ -70,7 +70,7 @@ const launchScraper = async() => {
                 return fullresults;
             })
             .then(async(res) => {
-            await uploadDocs(res, SenateCandidate );
+            await uploadDocs(res, Senator );
             });
 
     } catch(err) {
@@ -78,7 +78,6 @@ const launchScraper = async() => {
     }
 
 };
-
 
 const fetchContracts = async (url, page) => {
     
@@ -88,7 +87,7 @@ const fetchContracts = async (url, page) => {
         page.waitForNavigation()
     ]);
 
-    await page.click(".candidate_filer");
+    await page.click(".senator_filer");
 
     await Promise.all([
         page.click(".btn-primary"),
