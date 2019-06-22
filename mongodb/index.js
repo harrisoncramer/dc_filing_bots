@@ -29,6 +29,8 @@ const getUsers = async (search) => {
 
 const updateDb = async (data, Model ) => {
 
+    let newData = updates = [];
+
     data = data.toArray();
 
     if(data.length === 0){
@@ -50,8 +52,8 @@ const updateDb = async (data, Model ) => {
             break;    
     };
 
-    let newData = res.newData; 
-    let updates = res.updates;
+    newData = res.newData; 
+    updates = res.updates;
     
     if(newData.length > 0){ // If new, create new time stamp, and add to database...
         newData = newData.map(item => ({ ...item }))

@@ -31,7 +31,7 @@ const fetchFara = async ({ url, page, today }) => {
             const number = $(tr).find("td[headers='REGISTRATIONNUMBER']").text();
             const registrant = $(tr).find("td[headers='REGISTRANTNAME']").text();
             const type = $(tr).find("td[headers='DOCUMENTTYPE']").text();
-            const date = moment($(tr).find("td[headers='STAMPED/RECEIVEDDATE']").text()).valueOf(); /// This must be a number...
+            const date = moment($(tr).find("td[headers='STAMPED/RECEIVEDDATE']", "DD-MMM-YYYY").text()).valueOf(); /// This must be a number...
             return { link, number, registrant, type, date };
         });
 

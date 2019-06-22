@@ -1,10 +1,20 @@
 const mongoose = require("mongoose");
 
 const Fara = mongoose.model('Fara', {
-    allLinks: {
-        type: Array,
-        require: true
-    },
+    allLinks: [{
+        url: {
+            type: String,
+            require: true
+        },
+        text: {
+            type: String,
+            require: true
+        },
+        dateFiled: {
+            type: String,
+            require: true
+        }
+    }],
     registrant: {
         type: String,
         require: true,
@@ -29,8 +39,18 @@ const SenateCandidate = mongoose.model('SenateCandidate', {
         require: true,
     },
     link: {
-        type: String,
-        require: true,
+        url: {
+            type: String,
+            require: true
+        },
+        text: {
+            type: String,
+            require: true
+        }
+    },
+    date: {
+        type: Number,
+        require: true
     }
 }, 'senateCandidates');
 
@@ -44,8 +64,18 @@ const Senator = mongoose.model('Senator', {
         require: true,
     },
     link: {
-        type: String,
-        require: true,
+        url: {
+            type: String,
+            require: true
+        },
+        text: {
+            type: String,
+            require: true
+        }
+    },
+    date: {
+        type: Number,
+        require: true
     }
 }, 'senators' );
 
