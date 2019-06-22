@@ -9,7 +9,12 @@ const parseResults1 = async(html) => {
     const $ = cheerio.load(html);
 
     const tds = $(".table-striped tr[role='row'] td").map((i, item) => $(item).text()).toArray()
-    const links = $('tbody tr a').map((i, link) => $(link).attr("href")).toArray()
+    const links = $('tbody tr a').map((i, link) => {
+        let urlSeg = $(link).attr("href");
+        let url = `https://efdsearch.senate.gov${urlSeg}`
+        let text = $(link).text();
+        return { url, text };
+    }).toArray();
 
     const data = links.map((link, x) => {
         let result = { link, tds: [] };
@@ -26,17 +31,14 @@ const parseResults2 = async(data) => {
 
     let results = [];
     data.forEach(datum => {
-
-        const link = `https://efdsearch.senate.gov${datum.link}`;
         results.push({
             first: datum.tds[0].trim(),
             last: datum.tds[1].trim(),
-            link,
-            date: moment(datum.tds[4]).valueOf().toString()
+            link: datum.link,
+            date: moment(datum.tds[4], "MM/DD/YYYY").valueOf()
         })
     });
 
-    console.log(results);
     return results;
 };
 
