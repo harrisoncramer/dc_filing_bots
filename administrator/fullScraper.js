@@ -53,7 +53,7 @@ const launchScraper = async() => {
             .then(parseResults2)
             .then(async(results) => {
                 let fullresults = results;
-                let pageLength = 105;
+                let pageLength = 15;
                 let index = 0; // Could be simple for loop, but what are you gonna do...
                 while (index < pageLength - 1){
 
@@ -72,7 +72,7 @@ const launchScraper = async() => {
                 return fullresults;
             })
             .then(async(res) => {
-            await uploadDocs(res, Senator );
+            await uploadDocs(res, SenateCandidate );
             });
 
     } catch(err) {
@@ -89,7 +89,7 @@ const fetchContracts = async (url, page) => {
         page.waitForNavigation()
     ]);
 
-    await page.click(".senator_filer");
+    await page.click(".candidate_filer");
 
     await Promise.all([
         page.click(".btn-primary"),

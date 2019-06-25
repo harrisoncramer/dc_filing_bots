@@ -7,9 +7,8 @@ const logger = require("./logger");
 const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
-const acluBot = require("./bots/acluBot");
 
-const { environment, scheduleFifteen, scheduleFive } = require("./keys/config.js");
+const { environment, scheduleFifteen } = require("./keys/config.js");
 
 const setUpPuppeteer = async () => {
 
@@ -48,11 +47,6 @@ setUpPuppeteer()
                     .catch(err => logger.error('Launch bot error (15).', err));
             });
 
-            cron.schedule(scheduleFive, () => {
-                launchFiveBots({ page, browser, today })
-                    .catch(err => logger.error('Launch bot error (5).', err));
-            });
-
         } else if (environment === 'development') {
             // await senatorBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
             // await senateCandidateBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
@@ -62,8 +56,6 @@ setUpPuppeteer()
     .catch((err) => {
         logger.error( err)
     })
-
-
 
 /// Launching callbacks....
 const launchFifteenBots = async({ page, browser, today }) => {
@@ -89,17 +81,4 @@ const launchFifteenBots = async({ page, browser, today }) => {
     await page.close();
     await browser.close();
     logger.info(`Chrome Closed Bots.`);
-};
-
-const launchFiveBots = async({ page, browser, today }) => {
-        
-    try {
-        await acluBot(page).then(res => logger.info(res));
-    } catch(err) {
-        logger.error(`ACLU Bot Error - `, err);
-    }
-
-    await page.close();
-    await browser.close();
-    logger.info(`Chrome Closed Aclu Bot.`);
 };
