@@ -28,7 +28,7 @@ const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => 
         return Promise.resolve("Not mailing in dev server...")
     
     let fileTime = moment(date, 'YYYY-DD-MM').valueOf();
-    let html = await readFile(path.resolve(__dirname, 'emailContent', 'emailTemplates', 'drafts', `${fileTime}__${date}__${bot}.html`));
+    let html = await readFile(path.resolve(__dirname, 'emailContent', 'emails', 'sent', `${fileTime}__${date}__${bot}.html`));
 
     const promises = emails.map(email => {
         let HelperOptions = {
@@ -38,7 +38,7 @@ const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => 
             html,
             attachments: [{
                 filename: 'logo.png',
-                path: path.resolve(__dirname, 'emailContent', 'emailTemplates', 'images', 'logo.png'),
+                path: path.resolve(__dirname, 'emailContent', 'emails', 'images', 'logo.png'),
                 cid: 'logo' //my mistake was putting "cid:logo@cid" here! 
            }]
         };
@@ -92,7 +92,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
         let tmpl = _.template(html);
         let newHtml = tmpl({ target: dynamicHtml, targetTitle: dynamicTitle });
         let fileTime = moment(date, 'YYYY-DD-MM').valueOf();
-        await writeFile(path.resolve(__dirname, 'emailContent', 'emailTemplates', 'drafts', `${fileTime}__${date}__${bot}.html`), newHtml);
+        await writeFile(path.resolve(__dirname, 'emailContent', 'emails', 'sent', `${fileTime}__${date}__${bot}.html`), newHtml);
     }
 
     return { newData, updates };
