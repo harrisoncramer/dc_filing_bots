@@ -1,8 +1,11 @@
 const fs = require("fs");
-const _ = require("underscore");
 const util = require("util");
 const path = require("path");
+const _ = require("underscore");
+
 const nodemailer = require("nodemailer");
+const moment = require("moment");
+
 const readFile = (fileName) => util.promisify(fs.readFile)(fileName, 'utf8');
 const writeFile = (fileName, content) => util.promisify(fs.writeFile)(fileName, content, 'utf8');
 
@@ -49,10 +52,21 @@ const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => 
 const composeEmail = async ({ newData, updates, collection, date, bot }) => {
     let html = await readFile(path.resolve(__dirname, "./emailContent/blankHtml/index.html"));
     let dynamicHtml = '';
+    let dynamicTitle = '';
 
     if(newData.length > 0){
         switch(collection){
             case Senator:
+                newData.forEach(({ first, last, link}) => {
+                    let senatorName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">${last}, ${first}:</p>`;
+                    let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
+                    let listItem = `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`;
+                    let listClose = '</ul>';
+                    let all = senatorName.concat(listOpen).concat(listItem).concat(listClose);
+                    dynamicHtml = dynamicHtml.concat(all);
+                });
+                dynamicTitle = 'Senate Stock Disclosures'
+                break;
             case SenateCandidate:
                 newData.forEach(({ first, last, link}) => {
                     let senatorName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">${last}, ${first}:</p>`;
@@ -62,6 +76,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
                     let all = senatorName.concat(listOpen).concat(listItem).concat(listClose);
                     dynamicHtml = dynamicHtml.concat(all);
                 });
+                dynamicTitle = 'Senate Candidate Stock Disclosures';
                 break;
             case Fara:
                 break;         
@@ -74,11 +89,8 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
     };
 
     if(newData.length > 0 || updates.length > 0){ // Write the new file...
-        let targetTitle = collection === 'senators' ? 'Senate Stock Disclosures' : 'Senate Candidate Stock Disclosures';
         let tmpl = _.template(html);
-        let newHtml = tmpl({ target: dynamicHtml });
-        let newHtml = tmpl({ targetTitle: targetTitle });
-        
+        let newHtml = tmpl({ target: dynamicHtml, targetTitle: dynamicTitle });
         let fileTime = moment(date, 'YYYY-DD-MM').valueOf();
         await writeFile(path.resolve(__dirname, 'emailContent', 'emailTemplates', 'drafts', `${fileTime}__${date}__${bot}.html`), newHtml);
     }
