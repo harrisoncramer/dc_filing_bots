@@ -26,13 +26,13 @@ const fetchFara = async ({ url, page, today }) => {
         let trs = $(".t14Standard tbody tr.highlight-row");
 
         let data = trs.map((i, tr) => {
-            const link = $(tr).find("a").attr("href");
+            const url = $(tr).find("a").attr("href");
             const number = $(tr).find("td[headers='REGISTRATIONNUMBER']").text();
             const registrant = $(tr).find("td[headers='REGISTRANTNAME']").text();
-            const type = $(tr).find("td[headers='DOCUMENTTYPE']").text();
+            const text = $(tr).find("td[headers='DOCUMENTTYPE']").text();
             const date = moment($(tr).find("td[headers='STAMPED/RECEIVEDDATE']").text()).valueOf(); /// This must be a number...
-            return { link, number, registrant, type, date };
-        });
+            return { link: { url, text, date }, number, registrant };
+        }).toArray();
 
         return data;      
 };

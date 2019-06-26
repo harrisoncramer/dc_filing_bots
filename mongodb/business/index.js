@@ -4,7 +4,7 @@ module.exports = {
         let updates = [];
 
         data.forEach((newObject, i) => { // Sort data into 'new' bucket or 'update' bucket depending on link, registrant, and number values...
-            let isNew = !databaseData.some(databaseObject => (databaseObject.number === newObject.number && databaseObject.registrant === newObject.registrant));
+            let isNew = !databaseData.some(databaseObject => (databaseObject.link.url === newObject.link.url && databaseObject.number === newObject.number));
             if(isNew){
                 newBucket.push(newObject);
             } else { // Determine if the link is new and should go into updates bucket...
@@ -12,7 +12,7 @@ module.exports = {
                 if(matchingRegistrant.length === 0){ 
                     return; /// No updates, return database object.
                 } else if (!matchingRegistrant[0].allLinks.includes(newObject.link)){
-                    updates.push({ link: newObject.link, id: matchingRegistrant[0].id, registrant: matchingRegistrant[0].registrant });
+                    updates.push({ link: newObject.link, id: matchingRegistrant[0].id });
                 };
             };
         });

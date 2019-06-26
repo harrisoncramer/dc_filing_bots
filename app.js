@@ -49,13 +49,13 @@ setUpPuppeteer()
 
         } else if (environment === 'development') {
 
-            await senatorBot(page, today.format("YYYY-DD-MM"))
-                .then(res => console.log(res))
-                .catch((err) => logger.error(`Senator Bot Error - `, err)); 
+            // await senatorBot(page, today.format("YYYY-DD-MM"))
+            //     .then(res => console.log(res))
+            //     .catch((err) => logger.error(`Senator Bot Error - `, err)); 
 
-            await senateCandidateBot(page, today.format("YYYY-DD-MM"))
-                .then(res => console.log(res))
-                .catch((err) => logger.error(`Senate Candidate Bot Error - `, err));
+            // await senateCandidateBot(page, today.format("YYYY-DD-MM"))
+            //     .then(res => console.log(res))
+            //     .catch((err) => logger.error(`Senate Candidate Bot Error - `, err));
 
             await faraBot(page, today.format("MM-DD-YYYY"), today.subtract(7, 'days').format("MM-DD-YYYY"))
                 .then(res => console.log(res))
