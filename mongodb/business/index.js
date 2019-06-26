@@ -4,14 +4,14 @@ module.exports = {
         let updates = [];
 
         data.forEach((newObject, i) => { // Sort data into 'new' bucket or 'update' bucket depending on link, registrant, and number values...
-            let isNew = !databaseData.some(databaseObject => (databaseObject.link.url === newObject.link.url && databaseObject.number === newObject.number));
+            let isNew = !databaseData.some(databaseObject => (databaseObject.registrant === newObject.registrant && databaseObject.number === newObject.number));
             if(isNew){
                 newBucket.push(newObject);
             } else { // Determine if the link is new and should go into updates bucket...
                 let matchingRegistrant = databaseData.filter(databaseObject => (databaseObject.registrant === newObject.registrant && databaseObject.number === newObject.number)); // Array of 1, the correct registrant...
                 if(matchingRegistrant.length === 0){ 
                     return; /// No updates, return database object.
-                } else if (!matchingRegistrant[0].allLinks.includes(newObject.link)){
+                } else if (!matchingRegistrant[0].allLinks.some((link) => link.url === newObject.link.url)){ // Check to see if link is new...
                     updates.push({ link: newObject.link, id: matchingRegistrant[0].id });
                 };
             };
@@ -34,10 +34,10 @@ module.exports = {
             };
         }, []);
 
-        updates = updates.reduce((accumulator, { id, link, registrant }) => { // Simplify updates by combining new links...
+        updates = updates.reduce((accumulator, { id, link }) => { // Simplify updates by combining new links...
             const matching = accumulator.findIndex((obj) => obj.id === id);
             if(matching === -1){  // Will return -1 if no match...
-                accumulator.push({ id, links: [link], registrant });
+                accumulator.push({ id, links: [link] });
                 return accumulator;
             } else {
                 let oldLinks = accumulator[matching].links;

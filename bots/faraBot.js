@@ -44,31 +44,16 @@ const bot = async (page, today) => {
 
     return fetchFara({ url, page, today })
         .then(async(results) => updateDb(results, Fara))
+        .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: Fara, date: today }))
         .then(async({ newData, updates }) => {
-            let text = '–––New filings––– \n';
-            if(newData.length + updates.length > 0){
-                if(newData.length > 0){
-                    newData.forEach(({ registrant, allLinks }) => {
-                        text = text.concat(registrant).concat("\n");
-                        allLinks.forEach(link => text = text.concat(link + "\n"));
-                        text = text.concat("\n");
-                    });
-                }
-                if(updates.length > 0){
-                    updates.forEach(({ registrant, links }) => {
-                        text = text.concat(`\n–––New Links for ${registrant}`);
-                        links.forEach(lk => text = text.concat(`\n${lk}`));
-                    });
-                }
-                
+            if(newData.length > 0 || updates.length > 0){
                 const emails = await getUsers({ "data.fara": true });
-
-                return mailer(emails, text, 'Foreign Lobbyist(s)', true).then((res) => {
-                    res = res.length > 0 ? res : 'fara - nobody to email!';
+                return mailer({ emails, subject: 'Foreign Lobbyist Disclosure(s)', mailDuringDevelopment: true, date: today, bot: 'fara' }).then((res) => {
+                    res = res.length > 0 ? res : 'Fara - nobody to email!';
                     return res;
                 });
             } else {
-                return 'fara - no updates';
+                return "fara - no updates";
             }
         })
         .catch((err) => console.log(err));

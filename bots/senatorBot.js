@@ -75,11 +75,11 @@ const bot = async (page, today) => {
         return results;
     })
     .then(async(results) => updateDb(results, Senator))
-    .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: Senator, date: today, bot: 'senatorBot' }))
+    .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: Senator, date: today }))
     .then(async({newData, updates}) => {
         if(newData.length > 0 || updates.length > 0){
             const emails = await getUsers({ "data.senators": true });
-            return mailer({ emails, subject: 'Senate Disclosure(s)', mailDuringDevelopment: true, date: today, bot: 'senatorBot' }).then((res) => {
+            return mailer({ emails, subject: 'Senate Disclosure(s)', mailDuringDevelopment: true, date: today, bot: 'senators' }).then((res) => {
                 res = res.length > 0 ? res : 'senators - nobody to email!';
                 return res;
             });

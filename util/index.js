@@ -49,7 +49,7 @@ const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => 
     
 };
 
-const composeEmail = async ({ newData, updates, collection, date, bot }) => {
+const composeEmail = async ({ newData, updates, collection, date }) => {
     let html = await readFile(path.resolve(__dirname, "./emailContent/blankHtml/index.html"));
     let dynamicHtml = '';
     let dynamicTitle = '';
@@ -79,6 +79,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
                 dynamicTitle = 'Senate Candidate Stock Disclosures';
                 break;
             case Fara:
+                // Simple logic for creating Fara body here...
                 break;         
         }
     };
