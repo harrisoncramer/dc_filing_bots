@@ -27,6 +27,7 @@ const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => 
     if(environment === 'development' && !mailDuringDevelopment)
         return Promise.resolve("Not mailing in dev server...")
     
+    date = date.replace(/\//g, "-"); // In case the date uses slashes (from Fara)
     let fileTime = moment(date, 'YYYY-DD-MM').valueOf();
     let html = await readFile(path.resolve(__dirname, 'emailContent', 'emails', 'sent', `${fileTime}__${date}__${bot}.html`));
 
@@ -49,12 +50,12 @@ const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => 
     
 };
 
-const composeEmail = async ({ newData, updates, collection, date }) => {
+const composeEmail = async ({ newData, updates, collection, date, bot }) => {
     let html = await readFile(path.resolve(__dirname, "./emailContent/blankHtml/index.html"));
     let dynamicHtml = '';
     let dynamicTitle = '';
 
-    if(newData.length > 0){
+    if(newData.length > 0 || updates.length){
         switch(collection){
             case Senator:
                 newData.forEach(({ first, last, link}) => {
@@ -79,14 +80,25 @@ const composeEmail = async ({ newData, updates, collection, date }) => {
                 dynamicTitle = 'Senate Candidate Stock Disclosures';
                 break;
             case Fara:
-                // Simple logic for creating Fara body here...
+                newData.forEach(({ registrant, allLinks }) => {
+                    let faraName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">New Registrant: ${registrant}:</p>`;
+                    let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
+                    let listItems = allLinks.map((link) => `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`)
+                    let listClose = '</ul>';
+                    let all = faraName.concat(listOpen).concat(listItems).concat(listClose);
+                    dynamicHtml = dynamicHtml.concat(all);
+                });
+                updates.forEach(({ registrant, links }) => {
+                    let faraName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">New files for: ${registrant}</p>`;
+                    let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
+                    let listItems = links.map((link) => `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`)
+                    let listClose = '</ul>';
+                    let all = faraName.concat(listOpen).concat(listItems).concat(listClose);
+                    dynamicHtml = dynamicHtml.concat(all);
+                });
+                dynamicTitle = 'Foreign Lobbyist Disclosures';
                 break;         
         }
-    };
-
-    if(updates.length){
-        /// Do something else if there are updates!!
-        console.log("there are updates, add them to the html too...");
     };
 
     if(newData.length > 0 || updates.length > 0){ // Write the new file...

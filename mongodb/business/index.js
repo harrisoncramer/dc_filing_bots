@@ -12,7 +12,7 @@ module.exports = {
                 if(matchingRegistrant.length === 0){ 
                     return; /// No updates, return database object.
                 } else if (!matchingRegistrant[0].allLinks.some((link) => link.url === newObject.link.url)){ // Check to see if link is new...
-                    updates.push({ link: newObject.link, id: matchingRegistrant[0].id });
+                    updates.push({ link: newObject.link, id: matchingRegistrant[0].id, registrant: matchingRegistrant[0].registrant });
                 };
             };
         });
@@ -34,14 +34,14 @@ module.exports = {
             };
         }, []);
 
-        updates = updates.reduce((accumulator, { id, link }) => { // Simplify updates by combining new links...
+        updates = updates.reduce((accumulator, { id, link, registrant }) => { // Simplify updates by combining new links...
             const matching = accumulator.findIndex((obj) => obj.id === id);
             if(matching === -1){  // Will return -1 if no match...
-                accumulator.push({ id, links: [link] });
+                accumulator.push({ id, links: [link], registrant });
                 return accumulator;
             } else {
                 let oldLinks = accumulator[matching].links;
-                accumulator[matching].links = [ ...oldLinks, link ];
+                accumulator[matching].links = [ ...oldLinks, link, registrant ];
                 return accumulator;
             };
         }, []);

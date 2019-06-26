@@ -75,7 +75,7 @@ const bot = async (page, today) => {
         return results;
     })
     .then(async(results) => updateDb(results, Senator))
-    .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: Senator, date: today }))
+    .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: Senator, date: today,  bot: 'senateCandidates' }))
     .then(async({newData, updates}) => {
         if(newData.length > 0 || updates.length > 0){
             const emails = await getUsers({ "data.senators": true });

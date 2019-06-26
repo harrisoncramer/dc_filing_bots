@@ -1,6 +1,6 @@
 const cheerio = require("cheerio");
 
-const { mailer } = require("../util");
+const { mailer, composeEmail } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
 const { Fara } = require("../mongodb/schemas/data");
 const moment = require("moment");
@@ -44,11 +44,11 @@ const bot = async (page, today) => {
 
     return fetchFara({ url, page, today })
         .then(async(results) => updateDb(results, Fara))
-        .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: Fara, date: today }))
+        .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: Fara, date: moment(today, 'DD-MM-YYYY').format("YYYY-DD-MM"), bot: 'fara' })) /// Must transform date for proper file reading!
         .then(async({ newData, updates }) => {
             if(newData.length > 0 || updates.length > 0){
                 const emails = await getUsers({ "data.fara": true });
-                return mailer({ emails, subject: 'Foreign Lobbyist Disclosure(s)', mailDuringDevelopment: true, date: today, bot: 'fara' }).then((res) => {
+                return mailer({ emails, subject: 'Foreign Lobbyist Disclosure(s)', mailDuringDevelopment: true, date: moment(today, 'DD-MM-YYYY').format("YYYY-DD-MM"), bot: 'fara' }).then((res) => {
                     res = res.length > 0 ? res : 'Fara - nobody to email!';
                     return res;
                 });
