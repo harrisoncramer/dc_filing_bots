@@ -81,7 +81,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
                 break;
             case Fara:
                 newData.forEach(({ registrant, allLinks }) => {
-                    let faraName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">New Registrant: ${registrant}:</p>`;
+                    let faraName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">New Registrant: ${registrant}</p>`;
                     let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
                     let listItems = allLinks.map((link) => `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`)
                     let listClose = '</ul>';
