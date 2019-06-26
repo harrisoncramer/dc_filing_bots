@@ -1,4 +1,3 @@
-const moment = require("moment");
 const logger = require("../logger");
 
 const { Senator, SenateCandidate, Fara } = require("./schemas/data");
@@ -26,11 +25,9 @@ const getUsers = async (search) => {
     return users;
 };
 
-const updateDb = async (data, Model ) => {
+const updateDb = async (data, Model) => {
 
     let newData = updates = [];
-
-    data = data.toArray();
 
     if(data.length === 0){
         return { newData, updates }; // Return empty arrays w/out new data
@@ -43,6 +40,7 @@ const updateDb = async (data, Model ) => {
     switch(Model){ /// Determining any of the scraped data is new or contains updates.....
         case Senator:
             res = senateCandidateBusiness({ data, databaseData });
+            break;
         case SenateCandidate:
             res = senatorBusiness({ data, databaseData });
             break;

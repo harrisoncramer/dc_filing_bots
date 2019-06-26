@@ -8,7 +8,13 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Test",
+            "name": "Run Development",
+            "program": "${workspaceFolder}/app.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Scraper",
             "program": "${workspaceFolder}/administrator/fullScraper.js"
         }
     ]

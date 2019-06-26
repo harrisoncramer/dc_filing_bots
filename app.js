@@ -8,7 +8,7 @@ const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
 
-const { environment, scheduleFifteen } = require("./keys/config.js");
+const { environment, scheduleFifteen } = require("./config");
 
 const setUpPuppeteer = async () => {
 
@@ -48,13 +48,22 @@ setUpPuppeteer()
             });
 
         } else if (environment === 'development') {
-            // await senatorBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
-            // await senateCandidateBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
-            await faraBot(page, today.format("MM-DD-YYYY"), today.subtract(7, 'days').format("MM-DD-YYYY")).then(res => logger.info(res));
+
+            await senatorBot(page, today.format("YYYY-DD-MM"))
+                .then(res => console.log(res))
+                .catch((err) => console.log(`Senator Bot Error - `, err)); 
+
+            await senateCandidateBot(page, today.format("YYYY-DD-MM"))
+                .then(res => console.log(res))
+                .catch((err) => console.log(`Senate Candidate Bot Error - `, err));
+
+            await faraBot(page, today.format("MM-DD-YYYY"), today.subtract(7, 'days').format("MM-DD-YYYY"))
+                .then(res => console.log(res))
+                .catch((err) => console.log(`Fara Bot Error - `, err));
         }
     })
     .catch((err) => {
-        logger.error( err)
+        logger.error(err)
     })
 
 /// Launching callbacks....

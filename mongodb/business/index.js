@@ -49,12 +49,12 @@ module.exports = {
         return { updates, newData };
     },
     senatorBusiness: ({ data, databaseData }) => {
-        let newData = data.filter(newObject => !databaseData.some(databaseObject => databaseObject.link === newObject.link));
+        let newData = data.filter(newObject => !databaseData.some(databaseObject => databaseObject.link.url === newObject.link.url));
         let updates = [];
         return { updates, newData }
     },
     senateCandidateBusiness: ({data, databaseData }) => {
-        let newData = data.filter(newObject => !databaseData.some(databaseObject => databaseObject.link === newObject.link));
+        let newData = data.filter(newObject => !databaseData.some(databaseObject => databaseObject.link.url === newObject.link.url));
         let updates = [];
         return { updates, newData }
     }

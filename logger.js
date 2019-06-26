@@ -1,7 +1,7 @@
 const winston  = require('winston');
 const fs = require('fs');
 const path = require('path');
-const { environment } = require("./keys/config");
+const { environment } = require("./config");
 const logDir = 'log';
 const moment = require("moment");
 
