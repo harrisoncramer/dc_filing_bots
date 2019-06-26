@@ -1,7 +1,7 @@
 const cheerio = require("cheerio");
 const moment = require("moment");
 
-const { mailer } = require("../util");
+const { mailer, composeEmail } = require("../util");
 const { updateDb, getUsers } = require("../mongodb");
 const { SenateCandidate } = require("../mongodb/schemas/data");
 
@@ -40,47 +40,43 @@ const bot = async (page, today) => {
         const $ = cheerio.load(html);
 
         const tds = $(".table-striped tr[role='row'] td").map((i, item) => $(item).text()).toArray()
-        const links = $('tbody tr a').map((i, link) => $(link).attr("href")).toArray()
-
+        const links = $('tbody tr a').map((i, link) => {
+            let urlSeg = $(link).attr("href");
+            let url = `https://efdsearch.senate.gov${urlSeg}`
+            let text = $(link).text();
+            return { url, text };
+        }).toArray();
+    
         const data = links.map((link, x) => {
             let result = { link, tds: [] };
             for(let i = 0; i < 5; i++){
-               result.tds.push(tds[i + (x * 5)]);
+                result.tds.push(tds[i + (x * 5)]);
             }
             return result;
         });
-
+    
         return data;
     })
     .then(async(data) => { /// Check if each data is new, formatting...
 
         let results = [];
         data.forEach(datum => {
-            const no_format_date = new Date(datum.tds[4]).toUTCString();
-            const date = moment(no_format_date).format("YYYY-DD-MM");
-            if(today === date){
-                const link = `https://efdsearch.senate.gov${datum.link}`;
-                results.push({
-                    first: datum.tds[0].trim(),
-                    last: datum.tds[1].trim(),
-                    link
-                })
-            };
+            results.push({
+                first: datum.tds[0].trim(),
+                last: datum.tds[1].trim(),
+                link: datum.link,
+                date: moment(datum.tds[4], "MM/DD/YYYY").valueOf()
+            })
         });
 
         return results;
     })
     .then(async(results) => updateDb(results, SenateCandidate)) /// Update database w/ new data...
-    .then(async({ newData, updates }) => {
-        let text = '–––New filings––– \n';
-        if(newData.length > 0){
-            newData.forEach(({ first, last, link}) => {
-                const textPlus = `${first} ${last}: ${link}\n`;
-                text = text.concat(textPlus);
-            });
-
-            const emails = await getUsers({ "data.senateCandidates": true })
-            return mailer(emails, text, 'Senate Candidate Disclosure(s)', false).then((res) => {
+    .then(async({ newData, updates}) => composeEmail({ newData, updates, collection: SenateCandidate, date: today, bot: 'senateCandidates' }))
+    .then(async({newData, updates}) => {
+        if(newData.length > 0 || updates.length > 0){
+            const emails = await getUsers({ "data.senateCandidates": true });
+            return mailer({ emails, subject: 'Senate Candidate Disclosure(s)', mailDuringDevelopment: true, date: today, bot: 'senateCandidates' }).then((res) => {
                 res = res.length > 0 ? res : 'senateCandidates - nobody to email!';
                 return res;
             });

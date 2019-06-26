@@ -20,15 +20,16 @@ var transporter = nodemailer.createTransport({
     }
   });
 
-const mailer = async ({emails, subject, mailDuringDevelopment, date, bot }) => {
+const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => {
     if(environment === 'development' && !mailDuringDevelopment)
         return Promise.resolve("Not mailing in dev server...")
     
-    let html = await readFile(path.resolve(__dirname, 'emailContent', 'emailTemplates', 'drafts', `${date}__${bot}.html`));
+    let fileTime = moment(date, 'YYYY-DD-MM').valueOf();
+    let html = await readFile(path.resolve(__dirname, 'emailContent', 'emailTemplates', 'drafts', `${fileTime}__${date}__${bot}.html`));
 
     const promises = emails.map(email => {
         let HelperOptions = {
-            from: 'FiDi Bot <hcramer@nationaljournal.com>',
+            from: 'DCDOCS <hcramer@nationaljournal.com>',
             to: email,
             subject,
             html,
@@ -45,7 +46,7 @@ const mailer = async ({emails, subject, mailDuringDevelopment, date, bot }) => {
     
 };
 
-const composeEmail = async ({ newData, updates, collection }) => {
+const composeEmail = async ({ newData, updates, collection, date, bot }) => {
     let html = await readFile(path.resolve(__dirname, "./emailContent/blankHtml/index.html"));
     let dynamicHtml = '';
 
@@ -67,9 +68,20 @@ const composeEmail = async ({ newData, updates, collection }) => {
         }
     };
 
-    let tmpl = _.template(html);
-    let newHtml = tmpl({ target: dynamicHtml });
-    await writeFile(path.resolve(__dirname, 'emailContent', 'emailTemplates', 'drafts', 'index.html'), newHtml);
+    if(updates.length){
+        /// Do something else if there are updates!!
+        console.log("there are updates, add them to the html too...");
+    };
+
+    if(newData.length > 0 || updates.length > 0){ // Write the new file...
+        let targetTitle = collection === 'senators' ? 'Senate Stock Disclosures' : 'Senate Candidate Stock Disclosures';
+        let tmpl = _.template(html);
+        let newHtml = tmpl({ target: dynamicHtml });
+        let newHtml = tmpl({ targetTitle: targetTitle });
+        
+        let fileTime = moment(date, 'YYYY-DD-MM').valueOf();
+        await writeFile(path.resolve(__dirname, 'emailContent', 'emailTemplates', 'drafts', `${fileTime}__${date}__${bot}.html`), newHtml);
+    }
 
     return { newData, updates };
 };
@@ -83,7 +95,7 @@ const asyncForEach = async(array, callback) => {
     return results;
 };
 
-const formatNumber = (number) => {ZZ
+const formatNumber = (number) => {
     var splitNum;
     number = Math.abs(number);
     number = number.toFixed(0);
