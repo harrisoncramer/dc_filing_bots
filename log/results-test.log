@@ -1,49 +1,4 @@
 {"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"level":"error","message":"Senator Bot Error - data.toArray is not a function","stack":"TypeError: data.toArray is not a function\n    at updateDb (/Users/harrisoncramer/Desktop/bots/mongodb/index.js:33:17)\n    at fetchContracts.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senatorBot.js:77:29)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
-{"level":"error","message":"Senate Candidate Bot Error - data.toArray is not a function","stack":"TypeError: data.toArray is not a function\n    at updateDb (/Users/harrisoncramer/Desktop/bots/mongodb/index.js:33:17)\n    at fetchContracts.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:73:29)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"level":"error","message":"Senator Bot Error - data.toArray is not a function","stack":"TypeError: data.toArray is not a function\n    at updateDb (/Users/harrisoncramer/Desktop/bots/mongodb/index.js:33:17)\n    at fetchContracts.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senatorBot.js:77:29)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
-{"level":"error","message":"Senate Candidate Bot Error - data.toArray is not a function","stack":"TypeError: data.toArray is not a function\n    at updateDb (/Users/harrisoncramer/Desktop/bots/mongodb/index.js:33:17)\n    at fetchContracts.then.then.then (/Users/harrisoncramer/Desktop/bots/bots/senateCandidateBot.js:73:29)\n    at process.internalTickCallback (internal/process/next_tick.js:77:7)"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
 {"message":"Senator - 1 documents inserted!","level":"info"}
 {"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"SenateCandidate - 1 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"SenateCandidate - 1 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
-{"message":"Senator - 2 documents inserted!","level":"info"}
-{"message":"SenateCandidate - 1 documents inserted!","level":"info"}
-{"message":"Starting up program in development on 04-09-2019","level":"info"}
 {"message":"Senator - 1 documents inserted!","level":"info"}
-{"message":"SenateCandidate - 1 documents inserted!","level":"info"}
