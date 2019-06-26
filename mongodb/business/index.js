@@ -41,7 +41,7 @@ module.exports = {
                 return accumulator;
             } else {
                 let oldLinks = accumulator[matching].links;
-                accumulator[matching].links = [ ...oldLinks, link, registrant ];
+                accumulator[matching].links = [ ...oldLinks, link ];
                 return accumulator;
             };
         }, []);
