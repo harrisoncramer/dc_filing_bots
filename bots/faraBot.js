@@ -12,6 +12,8 @@ const fetchFara = async ({ url, page, today }) => {
         await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
 
         await page.select("#P10_DOCTYPE", "ALL") // Select all documents...
+        await page.goto(url, { waitUntil: 'networkidle2' }); // Ensure no network requests are happening (in last 500ms).        
+
         await page.$eval(".datepicker input[name='P10_STAMP1']", (el, value) => el.value = value, today); // Fill out input dates
         await page.$eval(".datepicker input[name='P10_STAMP2']", (el, value) => el.value = value, today);
 

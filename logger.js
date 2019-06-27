@@ -1,7 +1,6 @@
 const winston  = require('winston');
 const fs = require('fs');
 const path = require('path');
-const { environment } = require("./config");
 const logDir = 'log';
 const moment = require("moment");
 
@@ -10,7 +9,7 @@ if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
 
-const filename = environment === "production" ? path.join(logDir, 'results.log') : path.join(logDir, 'results-test.log');
+const filename = process.env.NODE_ENV === "production" ? path.join(logDir, 'results.log') : path.join(logDir, 'results-test.log');
 
 const logger = winston.createLogger({
 	transports: [

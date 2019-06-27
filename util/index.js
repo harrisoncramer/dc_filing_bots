@@ -9,22 +9,21 @@ const moment = require("moment");
 const readFile = (fileName) => util.promisify(fs.readFile)(fileName, 'utf8');
 const writeFile = (fileName, content) => util.promisify(fs.writeFile)(fileName, content, 'utf8');
 
-const { nodemailerConfig, environment } = require("../config");
 const { Senator, SenateCandidate, Fara } = require("../mongodb/schemas/data");
 
 var transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     auth: {
-      type: "OAuth2",
-      user: nodemailerConfig.user,
-      clientId: nodemailerConfig.clientId,
-      clientSecret: nodemailerConfig.clientSecret,
-      refreshToken: nodemailerConfig.refreshToken
+      type: process.env.NODEMAILER_TYPE,
+      user: process.env.NODEMAILER_USER,
+      clientId: process.env.NODEMAILER_CLIENT_ID,
+      clientSecret: process.env.NODEMAILER_CLIENT_SECRET,
+      refreshToken: process.env.NODEMAILER_REFRESH_TOKEN
     }
   });
 
 const mailer = async ({ emails, subject, mailDuringDevelopment, date, bot }) => {
-    if(environment === 'development' && !mailDuringDevelopment)
+    if(process.env.NODE_ENV === 'development' && !mailDuringDevelopment)
         return Promise.resolve("Not mailing in dev server...")
     
     date = date.replace(/\//g, "-"); // In case the date uses slashes (from Fara)
