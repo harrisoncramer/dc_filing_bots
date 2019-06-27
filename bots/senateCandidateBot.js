@@ -83,7 +83,7 @@ const bot = async (page, today) => {
         } else {
             return "senateCandidates - no updates";
         }
-    });
+    })
 };
 
 module.exports = bot;

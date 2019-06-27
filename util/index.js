@@ -61,7 +61,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
                 newData.forEach(({ first, last, link}) => {
                     let senatorName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">${last}, ${first}:</p>`;
                     let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
-                    let listItem = `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`;
+                    let listItem = `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a style="color: #1595E7;" href=${link.url}>${link.text}</a></li>`;
                     let listClose = '</ul>';
                     let all = senatorName.concat(listOpen).concat(listItem).concat(listClose);
                     dynamicHtml = dynamicHtml.concat(all);
@@ -72,7 +72,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
                 newData.forEach(({ first, last, link}) => {
                     let senatorName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">${last}, ${first}:</p>`;
                     let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
-                    let listItem = `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`;
+                    let listItem = `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a style="color: #1595E7;" href=${link.url}>${link.text}</a></li>`;
                     let listClose = '</ul>';
                     let all = senatorName.concat(listOpen).concat(listItem).concat(listClose);
                     dynamicHtml = dynamicHtml.concat(all);
@@ -83,7 +83,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
                 newData.forEach(({ registrant, allLinks }) => {
                     let faraName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">New Registrant: ${registrant}</p>`;
                     let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
-                    let listItems = allLinks.map((link) => `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`)
+                    let listItems = allLinks.map((link) => `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a style="color: #1595E7;" href=${link.url}>${link.text}</a></li>`).join("");
                     let listClose = '</ul>';
                     let all = faraName.concat(listOpen).concat(listItems).concat(listClose);
                     dynamicHtml = dynamicHtml.concat(all);
@@ -91,7 +91,7 @@ const composeEmail = async ({ newData, updates, collection, date, bot }) => {
                 updates.forEach(({ registrant, links }) => {
                     let faraName = `<p style="margin-bottom: 10px; margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.42; letter-spacing: -0.4px; color: #151515;">New files for: ${registrant}</p>`;
                     let listOpen = '<ul style="margin-left: 20px; margin-top: 0px; padding: 0px; ">';
-                    let listItems = links.map((link) => `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a href=${link.url}>${link.text}</a></li>`)
+                    let listItems = links.map((link) => `<li style="margin-left: 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: #151515;"><a style="color: #1595E7;" href=${link.url}>${link.text}</a></li>`).join("")
                     let listClose = '</ul>';
                     let all = faraName.concat(listOpen).concat(listItems).concat(listClose);
                     dynamicHtml = dynamicHtml.concat(all);

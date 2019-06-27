@@ -12,7 +12,7 @@ module.exports = {
                 if(matchingRegistrant.length === 0){ 
                     return; /// No updates, return database object.
                 } else if (!matchingRegistrant[0].allLinks.some((link) => link.url === newObject.link.url)){ // Check to see if link is new...
-                    updates.push({ link: newObject.link, id: matchingRegistrant[0].id, registrant: matchingRegistrant[0].registrant });
+                    updates.push({ id: matchingRegistrant[0].id, registrant: matchingRegistrant[0].registrant,  date: newObject.date, link: newObject.link });
                 };
             };
         });
@@ -30,18 +30,20 @@ module.exports = {
                 let oldLinks = accumulator[matching].allLinks;
                 let newLink = currentValue.allLinks;
                 accumulator[matching].allLinks = [ ...oldLinks, ...newLink ];
+                if(accumulator[matching].date < currentValue.date){ accumulator[matching].date = currentValue.date }; /// Reassign date...
                 return accumulator;
             };
         }, []);
 
-        updates = updates.reduce((accumulator, { id, link, registrant }) => { // Simplify updates by combining new links...
+        updates = updates.reduce((accumulator, { id, link, registrant, date }) => { // Simplify updates by combining new links...
             const matching = accumulator.findIndex((obj) => obj.id === id);
             if(matching === -1){  // Will return -1 if no match...
-                accumulator.push({ id, links: [link], registrant });
+                accumulator.push({ id, links: [link], registrant, date });
                 return accumulator;
             } else {
                 let oldLinks = accumulator[matching].links;
                 accumulator[matching].links = [ ...oldLinks, link ];
+                if(accumulator[matching].date < date){ accumulator[matching].date = date }; /// Reassign date...
                 return accumulator;
             };
         }, []);

@@ -30,8 +30,8 @@ const fetchFara = async ({ url, page, today }) => {
             const number = $(tr).find("td[headers='REGISTRATIONNUMBER']").text();
             const registrant = $(tr).find("td[headers='REGISTRANTNAME']").text();
             const text = $(tr).find("td[headers='DOCUMENTTYPE']").text();
-            const date = moment($(tr).find("td[headers='STAMPED/RECEIVEDDATE']").text()).valueOf(); /// This must be a number...
-            return { link: { url, text, date }, number, registrant };
+            const date = dateFiled = moment($(tr).find("td[headers='STAMPED/RECEIVEDDATE']").text()).valueOf(); /// This must be a number...
+            return { number, registrant, date, link: { url, text, dateFiled }};
         }).toArray();
 
         return data;      
@@ -56,7 +56,6 @@ const bot = async (page, today) => {
                 return "fara - no updates";
             }
         })
-        .catch((err) => console.log(err));
 };
 
 module.exports = bot;
