@@ -11,7 +11,7 @@ const Fara = mongoose.model('Fara', {
             require: true
         },
         dateFiled: {
-            type: String,
+            type: Number,
             require: true
         }
     }],

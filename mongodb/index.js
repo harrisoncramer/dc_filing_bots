@@ -58,7 +58,7 @@ const updateDb = async (data, Model) => {
     }
     if(updates.length > 0){
         await asyncForEach(updates, async(update) => {
-            await Model.updateOne({ "_id": update.id }, { $push: { allLinks : update.links }}).then(() => logger.info(`${Model.modelName} - ${updates.length} documents modified.`));
+            await Model.updateOne({ "_id": update.id }, { $push: { allLinks : update.links }, $set: { date: update.date }}).then(() => logger.info(`${Model.modelName} - ${updates.length} documents modified.`));
         });
     }
     

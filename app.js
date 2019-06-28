@@ -44,25 +44,25 @@ const launchFifteenBots = async({ page, today, env }) => {
     try {
         await senatorBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
     } catch(err){
-        catcher(err, 'senatorBot');
+        catcher(err, 'senatorBot - ');
     };
 
     try {
         await senateCandidateBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res)); // This sequence matters, because agree statement will not be present...
     } catch(err) {
-        catcher(err, 'SenateCandidate');
+        catcher(err, 'SenateCandidate - ');
     };
 
     try {
-        await faraBot(page, today.format("MM-DD-YYYY"), today.subtract(7, 'days').format("MM-DD-YYYY")).then(res => logger.info(res));
+        await faraBot({ page, today: today.format("MM/DD/YYYY"), oneWeekAgo: today.subtract(14, 'days').format("MM/DD/YYYY")}).then(res => logger.info(res));
     } catch(err) {
-        catcher(err, 'faraBot');
+        catcher(err, 'faraBot - ');
     };
 }
 
 if(process.env.NODE_ENV === 'production'){
     logger.info(`Starting up bots in ${process.env.NODE_ENV} at ${moment().format("llll")}`);
-    cron.schedule('*/15 * * * *', async () => {
+    cron.schedule('* * * * *', async () => {
         try {
             let { today, browser, page } = await setUpPuppeteer();
             logger.info(`Running program at ${today.format("llll")}`);
