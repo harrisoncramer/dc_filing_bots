@@ -62,7 +62,7 @@ const launchFifteenBots = async({ page, today, env }) => {
 
 if(process.env.NODE_ENV === 'production'){
     logger.info(`Starting up bots in ${process.env.NODE_ENV} at ${moment().format("llll")}`);
-    cron.schedule('* * * * *', async () => {
+    cron.schedule('*/15 * * * *', async () => {
         try {
             let { today, browser, page } = await setUpPuppeteer();
             logger.info(`Running program at ${today.format("llll")}`);
