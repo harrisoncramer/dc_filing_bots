@@ -10,10 +10,10 @@ const senatorBot = require("./bots/senatorBot");
 const senateCandidateBot = require("./bots/senateCandidateBot");
 const faraBot = require("./bots/faraBot");
 
-const today = process.env.NODE_ENV === "production" ? moment() : moment("04-09-2019");
-
+/// Set up web browser....
 const setUpPuppeteer = async () => {
 
+    const today = process.env.NODE_ENV === "production" ? moment() : moment("04-09-2019");
     const headless = process.env.NODE_ENV === "production";
     const browser = await pupeteer.launch({ headless, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage(); // Create new instance of puppet
@@ -36,55 +36,55 @@ const setUpPuppeteer = async () => {
     return { today, browser, page };
 };
 
-if(process.env.NODE_ENV === 'production'){
-    logger.info(`Starting up program in ${process.env.NODE_ENV} on ${today.format("MM-DD-YYYY")}`);
-    cron.schedule('*/15 * * * *', () => {
-        setUpPuppeteer()
-            .then(({ today, browser, page }) => {
-                launchFifteenBots({ page, browser, today })
-                    .catch(err => logger.error('Launch bot error (15).', err));
-            });
-    });
-
-} else if (process.env.NODE_ENV === 'development') {
-    logger.info(`Starting up program in ${process.env.NODE_ENV} on ${today.format("MM-DD-YYYY")}`);
-    setUpPuppeteer().then(({ today, browser, page }) => {
-        senatorBot(page, today.format("YYYY-DD-MM"))
-            .then(res => console.log(res))
-            .catch((err) => logger.error(`Senator Bot Error - `, err)); 
-
-        senateCandidateBot(page, today.format("YYYY-DD-MM"))
-            .then(res => console.log(res))
-            .catch((err) => logger.error(`Senate Candidate Bot Error - `, err));
-
-        faraBot(page, today.format("MM-DD-YYYY"), today.subtract(7, 'days').format("MM-DD-YYYY"))
-            .then(res => console.log(res))
-            .catch((err) => logger.error(`Fara Bot Error - `, err));
-    });
-};
-
 /// Launching callbacks....
-const launchFifteenBots = async({ page, browser, today }) => {
-        
+const launchFifteenBots = async({ page, today, env }) => {
+    
+    let catcher = (err, bot) => env === 'production' ? logger.error(bot, err) : console.log(bot, err);
+
     try {
         await senatorBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res));
-    } catch(err) {
-        logger.error(`SenatorBot Error - `, err);
-    }
+    } catch(err){
+        catcher(err, 'senatorBot');
+    };
 
     try {
         await senateCandidateBot(page, today.format("YYYY-DD-MM")).then(res => logger.info(res)); // This sequence matters, because agree statement will not be present...
     } catch(err) {
-        logger.error(`SenateCandidate Bot Error - `, err);
-    }
+        catcher(err, 'SenateCandidate');
+    };
 
     try {
         await faraBot(page, today.format("MM-DD-YYYY"), today.subtract(7, 'days').format("MM-DD-YYYY")).then(res => logger.info(res));
     } catch(err) {
-        logger.error(`Fara Bot Error - `, err);
-    }
+        catcher(err, 'faraBot');
+    };
+}
 
-    await page.close();
-    await browser.close();
-    logger.info(`Chrome Closed Bots.`);
+if(process.env.NODE_ENV === 'production'){
+    logger.info(`Starting up bots in ${process.env.NODE_ENV} at ${moment().format("llll")}`);
+    cron.schedule('* * * * *', async () => {
+        try {
+            let { today, browser, page } = await setUpPuppeteer();
+            logger.info(`Running program at ${today.format("llll")}`);
+            await launchFifteenBots({ page, today, env: process.env.NODE_ENV });
+            await page.close();
+            await browser.close();
+            logger.info(`Chrome Closed Bots.`);
+        } catch (err){
+            logger.error('Root Error (15 minute bot).', err);
+        }                
+    });
+} else if (process.env.NODE_ENV === 'development') {
+    (async () => {
+        try {
+            let { today, browser, page } = await setUpPuppeteer();
+            logger.info(`Running program at ${today.format("llll")}`);
+            await launchFifteenBots({ page, today, env: process.env.NODE_ENV });
+            await page.close();
+            await browser.close();
+            logger.info(`Chrome Closed Bots.`);
+        } catch (err){
+            logger.error('Root Error in development', err);
+        }
+    })();
 };
