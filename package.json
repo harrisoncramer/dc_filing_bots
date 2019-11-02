@@ -4,7 +4,7 @@
     "dotenv": "^7.0.0",
     "moment": "^2.24.0",
     "mongodb": "^3.2.3",
-    "mongoose": "^5.5.2",
+    "mongoose": "^5.7.5",
     "node-cron": "^2.0.3",
     "nodemailer": "^5.1.1",
     "puppeteer": "^1.13.0",
